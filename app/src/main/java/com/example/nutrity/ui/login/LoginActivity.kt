@@ -18,6 +18,7 @@ import com.example.nutrity.MainActivity
 import com.example.nutrity.databinding.ActivityLoginBinding
 
 import com.example.nutrity.R
+import com.example.nutrity.ui.signup.SignupActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -37,11 +38,19 @@ class LoginActivity : AppCompatActivity() {
             {
                 val intent:Intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+                finish()
             }
             else
             {
                 Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        val signup = binding.signup
+
+        signup.setOnClickListener {
+            val intent:Intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
         }
 
 
