@@ -27,4 +27,9 @@
         android:name="com.example.nutrity.ui.configuracion.ConfiguracionFragment"
         android:label="Perfil"
         tools:layout="@layout/configuracion_fragment" />
+    <fragment
+        android:id="@+id/comidasFragment"
+        android:name="com.example.nutrity.ui.comidas.ComidasFragment"
+        android:label="Comidas"
+        tools:layout="@layout/comidas_fragment" />
 </navigation>
