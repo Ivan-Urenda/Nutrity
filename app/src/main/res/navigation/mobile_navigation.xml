@@ -3,13 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@id/nav_home">
-
-    <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.nutrity.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+    app:startDestination="@id/nav_imc">
 
     <fragment
         android:id="@+id/nav_calorias"
@@ -32,4 +26,14 @@
         android:name="com.example.nutrity.ui.comidas.ComidasFragment"
         android:label="Comidas"
         tools:layout="@layout/comidas_fragment" />
+    <fragment
+        android:id="@+id/nav_imc"
+        android:name="com.example.nutrity.ui.imc.IMCFragment"
+        android:label="IMC"
+        tools:layout="@layout/i_m_c_fragment" />
+    <fragment
+        android:id="@+id/platilloFragment"
+        android:name="com.example.nutrity.ui.PlatilloFragment"
+        android:label="Sushi"
+        tools:layout="@layout/platillo_fragment" />
 </navigation>
