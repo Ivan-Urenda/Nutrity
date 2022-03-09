@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
 
         login.setOnClickListener {
 
-            if(binding.username.text.toString() == "ivan" && binding.password.text.toString() == "pato")
+            if(binding.username.text.toString() == "nutrity" && binding.password.text.toString() == "admin")
             {
                 val intent:Intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
