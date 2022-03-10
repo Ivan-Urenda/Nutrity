@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.nutrity.R
 import com.example.nutrity.databinding.FragmentCaloriasBinding
@@ -43,25 +44,31 @@ class IMCFragment : Fragment() {
 
         binding.calculateButton.setOnClickListener {
 
-            val weight_value = binding.weight.text.toString().toDouble()
-            val height_value = binding.height.text.toString().toDouble() / 100
-
-            val weightValue = weight_value.toDouble()
-            val heightValue = height_value.toDouble()
-
-            val imc = weightValue / heightValue.pow(2)
-
-            if (imc < 16) {
-                binding.result.text = "IMC: " + imc + "\n\nEstado: Delgadez severa"
-            } else if (imc < 18.5) {
-                binding.result.text = "IMC: " + imc + "\n\nEstado: Bajo peso"
-            } else if (imc in 18.5..24.9) {
-                binding.result.text = "IMC: " + imc + "\n\nEstado: Normal"
-            } else if (imc >= 25) {
-                binding.result.text = "IMC: " + imc + "\n\nEstado: Sobrepeso"
-            } else {
-                binding.result.text = "IMC: " + imc + "\n\nEstado: Obesidad"
+            if(binding.weight.text.toString().isEmpty() || binding.height.text.toString().isEmpty()){
+                Toast.makeText(context, "Ingresa un valor valido", Toast.LENGTH_SHORT).show()
             }
+            else if(binding.height.text.toString().toDouble() > 272){
+                Toast.makeText(context, "Ingresa una altura valido", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val weightValue = binding.weight.text.toString().toDouble()
+                val heightValue = binding.height.text.toString().toDouble() / 100
+
+                val imc = weightValue / heightValue.pow(2)
+
+                if (imc < 16) {
+                    binding.result.text = "IMC: " + imc + "\n\nEstado: Delgadez severa"
+                } else if (imc < 18.5) {
+                    binding.result.text = "IMC: " + imc + "\n\nEstado: Bajo peso"
+                } else if (imc in 18.5..24.9) {
+                    binding.result.text = "IMC: " + imc + "\n\nEstado: Normal"
+                } else if (imc >= 25) {
+                    binding.result.text = "IMC: " + imc + "\n\nEstado: Sobrepeso"
+                } else {
+                    binding.result.text = "IMC: " + imc + "\n\nEstado: Obesidad"
+                }
+            }
+
         }
 
         return root
