@@ -33,7 +33,7 @@
         tools:layout="@layout/i_m_c_fragment" />
     <fragment
         android:id="@+id/platilloFragment"
-        android:name="com.example.nutrity.ui.PlatilloFragment"
+        android:name="com.example.nutrity.ui.platillo.PlatilloFragment"
         android:label="Sushi"
         tools:layout="@layout/platillo_fragment" />
 </navigation>

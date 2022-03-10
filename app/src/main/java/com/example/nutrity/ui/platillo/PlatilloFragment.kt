@@ -1,4 +1,4 @@
-package com.example.nutrity.ui
+package com.example.nutrity.ui.platillo
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle

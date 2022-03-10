@@ -18,6 +18,7 @@ import com.example.nutrity.MainActivity
 import com.example.nutrity.databinding.ActivityLoginBinding
 
 import com.example.nutrity.R
+import com.example.nutrity.ui.forgot_pass.Forgot_pass_Activity
 import com.example.nutrity.ui.signup.SignupActivity
 
 class LoginActivity : AppCompatActivity() {
@@ -50,6 +51,13 @@ class LoginActivity : AppCompatActivity() {
 
         signup.setOnClickListener {
             val intent:Intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
+        }
+
+        val pass = binding.recoverPass
+
+        pass.setOnClickListener {
+            val intent:Intent = Intent(this, Forgot_pass_Activity::class.java)
             startActivity(intent)
         }
 

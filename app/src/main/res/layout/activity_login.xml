@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/recoverPass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -65,7 +65,9 @@
         app:layout_constraintBottom_toTopOf="@+id/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/username"
-        app:layout_constraintVertical_bias="0.638" />
+        app:layout_constraintVertical_bias="0.638"
+        android:clickable="true"
+        android:focusable="true"/>
 
     <EditText
         android:id="@+id/password"
@@ -79,7 +81,7 @@
         android:minHeight="48dp"
         android:textColorHint="#989898"
         android:theme="@style/CampoTextoVerde"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintBottom_toTopOf="@+id/recoverPass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
