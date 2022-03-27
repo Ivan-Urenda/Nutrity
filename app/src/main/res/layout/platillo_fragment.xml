@@ -210,7 +210,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.109"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/platilloImage" />
 
     <TextView
         android:id="@+id/subTitle"
@@ -270,7 +270,7 @@
         app:layout_constraintTop_toBottomOf="@+id/subTitle2" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/platilloImage"
         android:layout_width="177dp"
         android:layout_height="189dp"
         android:background="@drawable/btnimg"
