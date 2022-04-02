@@ -21,11 +21,11 @@ class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>): RecyclerVi
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
-        holder.label.setText("Label\t"+recipes.get(position).recipeModel.label)
-        holder.source.setText("Source\t"+recipes.get(position).recipeModel.source)
-        holder.yeild.setText("Yeild\t"+recipes.get(position).recipeModel.yield)
-        holder.calories.setText("Calories\t"+recipes.get(position).recipeModel.calories)
-        holder.weight.setText("Weight\t"+recipes.get(position).recipeModel.totalWeight)
+        holder.label.setText(recipes.get(position).recipeModel.label)
+        holder.source.setText("Source: "+recipes.get(position).recipeModel.source)
+        holder.yeild.setText("Portions: "+recipes.get(position).recipeModel.yield)
+        holder.calories.setText("Calories: "+recipes.get(position).recipeModel.calories+" kcal")
+        holder.weight.setText("Weight: "+recipes.get(position).recipeModel.totalWeight+" g")
         Glide.with(holder.itemView.context).load(recipes.get(position).recipeModel.image).centerCrop().diskCacheStrategy(
             DiskCacheStrategy.ALL).into(holder.imageView)
     }

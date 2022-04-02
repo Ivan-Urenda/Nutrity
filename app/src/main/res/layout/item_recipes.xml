@@ -22,7 +22,7 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="3"
+            android:columnCount="1"
             android:rowCount="2"
             >
 
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="label"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"/>
@@ -40,8 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="src"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"/>
             <TextView
@@ -49,8 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="yield"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"/>
             <TextView
@@ -58,8 +56,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="calories"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"/>
             <TextView
@@ -67,8 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="totalWeight"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="20sp"
                 android:textColor="@color/black"
                 android:layout_margin="5dp"/>
 
