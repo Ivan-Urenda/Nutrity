@@ -8,8 +8,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isGone
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nutrity.*
@@ -19,9 +22,7 @@ import com.example.nutrity.json_files.recipe_model.adapter.RecipeAdapter
 import com.example.nutrity.models.RootObjectModel
 import com.example.nutrity.response.SearchRecipes
 import com.example.nutrity.utils.APICredential
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,6 +44,7 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
     private lateinit var recipes: ArrayList<RootObjectModel>
     private lateinit var adapter: RecipeAdapter
     private lateinit var searchView: android.widget.SearchView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,11 +54,12 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
         val slideshowViewModel =
             ViewModelProvider(this).get(ComidasViewModel::class.java)
 
-        _binding = ComidasFragmentBinding.inflate(inflater, container, false)
+        _binding = com.example.nutrity.databinding.ComidasFragmentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.SearchComidas.setOnQueryTextListener(this)
 
+        progressBar = binding.progressBar
         recyclerView = binding.rvRecipes
         searchView = binding.SearchComidas
         searchView.onActionViewCollapsed()
@@ -76,28 +79,40 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
         return true
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun searchRecipes (query: String) {
 
-        var retrofit: Retrofit = Retrofit.Builder().baseUrl(APICredential().BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create()).build()
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
 
-        var apiClient: APIClient = retrofit.create(APIClient::class.java)
-        var searchRecipesCall: Call<SearchRecipes> = apiClient.getRecipesBySearch(APICredential().TYPE,query, APICredential().APP_ID, APICredential().API_KEY)
-        searchRecipesCall.enqueue(object : Callback<SearchRecipes> {
-            override fun onResponse(call: Call<SearchRecipes>, response: Response<SearchRecipes>) {
-                if (response.isSuccessful && response.body() != null){
-                    recipes = response.body()!!.getFoodRecipes()
+            progressBar.visibility = View.VISIBLE
+
+            var searchRecipesCall: Call<SearchRecipes> = withContext(Dispatchers.IO){
+                var retrofit: Retrofit = Retrofit.Builder().baseUrl(APICredential().BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create()).build()
+                var apiClient: APIClient = retrofit.create(APIClient::class.java)
+                return@withContext apiClient.getRecipesBySearch(APICredential().TYPE,query, APICredential().APP_ID, APICredential().API_KEY)
+            }
+
+
+            searchRecipesCall.enqueue(object : Callback<SearchRecipes> {
+                override fun onResponse(call: Call<SearchRecipes>, response: Response<SearchRecipes>) {
+                    if (response.isSuccessful && response.body() != null){
+                        recipes = response.body()!!.getFoodRecipes()
+                    }
+                    recyclerView.layoutManager = LinearLayoutManager(context)
+                    adapter = RecipeAdapter(recipes)
+                    recyclerView.adapter = adapter
+                    progressBar.visibility = View.GONE
+
                 }
-                recyclerView.layoutManager = LinearLayoutManager(context)
-                adapter = RecipeAdapter(recipes)
-                recyclerView.adapter = adapter
-            }
 
-            override fun onFailure(call: Call<SearchRecipes>, t: Throwable) {
-                Toast.makeText(context, "Ha ocurrido un error"+t.message, Toast.LENGTH_SHORT).show()
-            }
+                override fun onFailure(call: Call<SearchRecipes>, t: Throwable) {
+                    Toast.makeText(context, "Ha ocurrido un error"+t.message, Toast.LENGTH_SHORT).show()
+                }
 
-        })
+            })
+
+        }
     }
 
     override fun onDestroyView() {
