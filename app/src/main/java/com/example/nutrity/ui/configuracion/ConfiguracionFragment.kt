@@ -8,8 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.nutrity.MainActivity
 import com.example.nutrity.R
 import com.example.nutrity.ui.login.LoginActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class ConfiguracionFragment : Fragment() {
 
@@ -31,8 +34,10 @@ class ConfiguracionFragment : Fragment() {
         btn = root.findViewById(R.id.Logout)
         btn.setOnClickListener {
 
+            Firebase.auth.signOut()
             val intent:Intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
+            activity?.finish()
         }
 
         return root

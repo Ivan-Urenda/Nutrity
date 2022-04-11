@@ -1,6 +1,7 @@
 package com.example.nutrity.ui.login
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,11 +16,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.example.nutrity.MainActivity
+import com.example.nutrity.ProviderType
 import com.example.nutrity.databinding.ActivityLoginBinding
 
 import com.example.nutrity.R
 import com.example.nutrity.ui.forgot_pass.Forgot_pass_Activity
 import com.example.nutrity.ui.signup.SignupActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,19 +35,24 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val login = binding.login
+        val login = binding.loginBtn
 
         login.setOnClickListener {
 
-            if(binding.username.text.toString() == "nutrity" && binding.password.text.toString() == "admin")
+            if(binding.username.text.isNotEmpty() && binding.password.text.isNotEmpty())
             {
-                val intent:Intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-            else
-            {
-                Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
+                Firebase.auth
+                    .signInWithEmailAndPassword(binding.username.text.toString(),
+                        binding.password.text.toString()).addOnCompleteListener {
+
+                            if (it.isSuccessful)
+                            {
+                                showHome(it.result.user?.email ?:"", ProviderType.BASIC)
+                            }else
+                            {
+                                showAlert()
+                            }
+                    }
             }
         }
 
@@ -62,6 +71,24 @@ class LoginActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    private fun showAlert(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Error")
+        builder.setMessage("The email address or password is incorrect")
+        builder.setPositiveButton("Aceptar", null)
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    private fun showHome(email: String, provider: ProviderType){
+        val homeIntent:Intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("email", email)
+            putExtra("provider", provider.name)
+        }
+        startActivity(homeIntent)
+        finish()
     }
 }
 

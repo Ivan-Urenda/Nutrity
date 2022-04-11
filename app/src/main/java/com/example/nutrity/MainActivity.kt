@@ -19,6 +19,10 @@ import com.example.nutrity.databinding.ActivityMainBinding
 import com.example.nutrity.ui.login.LoginActivity
 import retrofit2.Retrofit
 
+enum class ProviderType{
+    BASIC
+}
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
