@@ -8,12 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.example.nutrity.R
-import com.example.nutrity.databinding.FragmentCaloriasBinding
-import com.example.nutrity.databinding.FragmentRecetasBinding
 import com.example.nutrity.databinding.IMCFragmentBinding
-import com.example.nutrity.ui.recetas.RecetasViewModel
 import kotlin.math.pow
 
 class IMCFragment : Fragment() {

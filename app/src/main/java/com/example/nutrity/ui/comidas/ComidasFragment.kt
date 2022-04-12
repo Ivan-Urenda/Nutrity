@@ -1,24 +1,19 @@
 package com.example.nutrity.ui.comidas
 
-import android.nfc.Tag
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.isGone
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.nutrity.*
 import com.example.nutrity.apis.APIClient
 import com.example.nutrity.databinding.ComidasFragmentBinding
-import com.example.nutrity.json_files.recipe_model.adapter.RecipeAdapter
+import com.example.nutrity.adapter.RecipeAdapter
 import com.example.nutrity.models.RootObjectModel
 import com.example.nutrity.response.SearchRecipes
 import com.example.nutrity.utils.APICredential
@@ -28,8 +23,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.temporal.TemporalQuery
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListener {

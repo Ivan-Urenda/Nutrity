@@ -12,19 +12,14 @@
         tools:layout="@layout/fragment_calorias" />
 
     <fragment
-        android:id="@+id/nav_recetas"
-        android:name="com.example.nutrity.ui.recetas.RecetasFragment"
-        android:label="@string/menu_recetas"
-        tools:layout="@layout/fragment_recetas" />
-    <fragment
         android:id="@+id/nav_configuracion"
         android:name="com.example.nutrity.ui.configuracion.ConfiguracionFragment"
         android:label="Perfil"
         tools:layout="@layout/configuracion_fragment" />
     <fragment
-        android:id="@+id/comidasFragment"
+        android:id="@+id/nav_recetas"
         android:name="com.example.nutrity.ui.comidas.ComidasFragment"
-        android:label="Comidas"
+        android:label="@string/menu_recetas"
         tools:layout="@layout/comidas_fragment" />
     <fragment
         android:id="@+id/nav_imc"

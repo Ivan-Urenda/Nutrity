@@ -1,9 +1,11 @@
 package com.example.nutrity.ui.platillo
 
+import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,14 +13,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.example.nutrity.R
+import com.squareup.picasso.Picasso
 
 class PlatilloFragment : Fragment(), SensorEventListener {
 
     var sensorManager: SensorManager?= null
     var sensor: Sensor?= null
     private lateinit var recetaImage: ImageView
+    private lateinit var recipeName: TextView
+    private lateinit var calories: TextView
 
     companion object {
         fun newInstance() = PlatilloFragment()
@@ -32,6 +39,12 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     ): View? {
         val root = inflater.inflate(R.layout.platillo_fragment, container, false)
         recetaImage = root.findViewById(R.id.platilloImage)
+        recipeName = root.findViewById(R.id.RecipeName)
+        calories = root.findViewById(R.id.calories)
+
+        recipeName.text = arguments?.getString("name")
+        calories.text = arguments?.getString("calories")
+        Picasso.get().load(arguments?.getString("image")).into(recetaImage)
 
         sensorManager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
         sensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)

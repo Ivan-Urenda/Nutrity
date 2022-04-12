@@ -8,9 +8,8 @@ data class RecipeModel (
     var label: String,
     var image: String,
     var source: String,
-    var yield: Float,
     var calories: Float,
-    var totalWeight: Float,
+    var ingredientLines: ArrayList<String>,
     @SerializedName("images")
     @Expose()
     var rootImageModel: RootImageModel

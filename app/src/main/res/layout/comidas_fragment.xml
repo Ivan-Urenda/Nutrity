@@ -17,7 +17,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/SearchComidas"
-            tools:listitem="@layout/item_recipes" />
+            tools:listitem="@layout/item_recipes"
+            android:layout_marginTop="10dp"/>
 
         <SearchView
             android:id="@+id/SearchComidas"
@@ -27,7 +28,8 @@
             android:background="@drawable/searchview_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="15dp"/>
 
 
         <ProgressBar
