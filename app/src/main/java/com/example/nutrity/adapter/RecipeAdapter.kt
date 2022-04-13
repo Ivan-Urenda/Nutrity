@@ -20,6 +20,7 @@ import com.example.nutrity.MainActivity
 import com.example.nutrity.R
 import com.example.nutrity.models.RootObjectModel
 import com.example.nutrity.ui.platillo.PlatilloFragment
+import kotlin.math.roundToInt
 
 class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>): RecyclerView.Adapter<RecipeAdapter.FoodViewHolder>() {
 
@@ -30,14 +31,20 @@ class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>): RecyclerVi
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
-        holder.label.setText(recipes.get(position).recipeModel.label)
-        holder.source.setText(recipes.get(position).recipeModel.source)
-        holder.calories.setText(""+recipes.get(position).recipeModel.calories+" kcal")
-        Glide.with(holder.itemView.context).load(recipes.get(position).recipeModel.image).centerCrop().diskCacheStrategy(
+        holder.label.text = recipes[position].recipeModel.label
+        holder.source.text = recipes[position].recipeModel.source
+        holder.calories.text = ""+ recipes[position].recipeModel.calories.roundToInt()+" kcal"
+        Glide.with(holder.itemView.context).load(recipes[position].recipeModel.image).centerCrop().diskCacheStrategy(
             DiskCacheStrategy.ALL).into(holder.imageView)
         holder.cardView.setOnClickListener {
             val navController= Navigation.findNavController((holder.context) as Activity, R.id.nav_host_fragment_content_main)
-            val bundle = bundleOf("name" to holder.label.text.toString(), "calories" to holder.calories.text.toString(), "image" to recipes.get(position).recipeModel.image)
+            val bundle = bundleOf("name" to holder.label.text.toString(),
+                "calories" to recipes[position].recipeModel.calories.roundToInt().toString()+" kcal",
+                "proteins" to recipes[position].recipeModel.rootNutrientsModel.protein.quantity.roundToInt().toString()+" g",
+                "carbs" to recipes[position].recipeModel.rootNutrientsModel.carbs.quantity.roundToInt().toString()+" g",
+                "fat" to recipes[position].recipeModel.rootNutrientsModel.fat.quantity.roundToInt().toString()+" g",
+                "ingredients" to recipes[position].recipeModel.ingredientLines,
+                "image" to recipes[position].recipeModel.image)
             navController.navigate(R.id.platilloFragment, bundle)
         }
     }

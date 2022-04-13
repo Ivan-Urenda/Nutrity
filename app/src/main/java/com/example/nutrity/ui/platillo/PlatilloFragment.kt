@@ -1,22 +1,23 @@
 package com.example.nutrity.ui.platillo
 
-import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.net.Uri
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.nutrity.R
+import com.example.nutrity.adapter.IngredientsAdapter
 import com.squareup.picasso.Picasso
 
 class PlatilloFragment : Fragment(), SensorEventListener {
@@ -26,6 +27,12 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     private lateinit var recetaImage: ImageView
     private lateinit var recipeName: TextView
     private lateinit var calories: TextView
+    private lateinit var proteins: TextView
+    private lateinit var carbs: TextView
+    private lateinit var fat: TextView
+    private lateinit var lvingredients: ListView
+    private lateinit var arrayAdapter: ArrayAdapter<*>
+    private lateinit var ingredients: ArrayList<String>
 
     companion object {
         fun newInstance() = PlatilloFragment()
@@ -38,13 +45,27 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.platillo_fragment, container, false)
+
         recetaImage = root.findViewById(R.id.platilloImage)
         recipeName = root.findViewById(R.id.RecipeName)
         calories = root.findViewById(R.id.calories)
+        proteins = root.findViewById(R.id.proteins)
+        carbs = root.findViewById(R.id.carbs)
+        fat = root.findViewById(R.id.fat)
+        lvingredients = root.findViewById(R.id.lvIngredients)
+
+
+        ingredients = arguments?.getStringArrayList("ingredients")!!
 
         recipeName.text = arguments?.getString("name")
         calories.text = arguments?.getString("calories")
         Picasso.get().load(arguments?.getString("image")).into(recetaImage)
+        proteins.text = arguments?.getString("proteins")
+        carbs.text = arguments?.getString("carbs")
+        fat.text = arguments?.getString("fat")
+
+        arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ingredients)
+        lvingredients.adapter = arrayAdapter
 
         sensorManager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
         sensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)

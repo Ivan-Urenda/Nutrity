@@ -29,6 +29,6 @@
     <fragment
         android:id="@+id/platilloFragment"
         android:name="com.example.nutrity.ui.platillo.PlatilloFragment"
-        android:label="Sushi"
+        android:label="Recipe"
         tools:layout="@layout/platillo_fragment" />
 </navigation>

@@ -16,16 +16,21 @@ class IngredientsAdapter(private var ingredients: ArrayList<String>): RecyclerVi
     }
 
     override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
-        holder.ingredient.setText(ingredients.get(position))
+        holder.render(ingredients[position])
     }
 
     override fun getItemCount(): Int {
         return ingredients.size
     }
 
-    class IngredientViewHolder(view: View):RecyclerView.ViewHolder(view) {
+    class IngredientViewHolder(val view: View):RecyclerView.ViewHolder(view) {
 
-        var ingredient: TextView = itemView.findViewById(R.id.Ingredient)
+        fun render(ingredientText: String){
+
+            var ingredient: TextView = itemView.findViewById(R.id.ingredient)
+
+            ingredient.text = ingredientText
+        }
 
     }
 }

@@ -11,7 +11,7 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_calorias">Calorias</string>
-    <string name="menu_recetas">Recetas</string>
+    <string name="menu_recetas">Recipes</string>
     <string name="menu_configuracion">Configuracion</string>
     <string name="menu_logout">Cerrar sesión</string>
     <string name="title_activity_login">LoginActivity</string>
