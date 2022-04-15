@@ -1,24 +1,23 @@
 package com.example.nutrity.ui.platillo
 
+import android.annotation.SuppressLint
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.example.nutrity.R
-import com.example.nutrity.adapter.IngredientsAdapter
 import com.squareup.picasso.Picasso
+
 
 class PlatilloFragment : Fragment(), SensorEventListener {
 
@@ -30,6 +29,8 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     private lateinit var proteins: TextView
     private lateinit var carbs: TextView
     private lateinit var fat: TextView
+    private lateinit var ScrollView: ScrollView
+    private lateinit var listView: ListView
     private lateinit var lvingredients: ListView
     private lateinit var arrayAdapter: ArrayAdapter<*>
     private lateinit var ingredients: ArrayList<String>
@@ -40,6 +41,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
 
     private lateinit var viewModel: PlatilloViewModel
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +55,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         carbs = root.findViewById(R.id.carbs)
         fat = root.findViewById(R.id.fat)
         lvingredients = root.findViewById(R.id.lvIngredients)
+        ScrollView = root.findViewById(R.id.miScrollView)
 
 
         ingredients = arguments?.getStringArrayList("ingredients")!!
@@ -70,6 +73,13 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         sensorManager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
         sensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
+        lvingredients.setOnTouchListener { _, event ->
+            ScrollView.requestDisallowInterceptTouchEvent(true)
+            when (event.actionMasked) {
+                MotionEvent.ACTION_UP -> ScrollView.requestDisallowInterceptTouchEvent(false)
+            }
+            false
+        }
 
         return root
     }

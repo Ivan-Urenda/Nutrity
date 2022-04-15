@@ -13,12 +13,12 @@
         android:theme="@style/Theme.Nutrity">
         <activity
             android:name=".ui.forgot_pass.Forgot_pass_Activity"
-            android:label="Olvidé mi contraseña"
+            android:label="Forgot password"
             android:exported="false" />
         <activity
             android:name=".ui.signup.SignupActivity"
             android:exported="false"
-            android:label="Registrarse"
+            android:label="Sign Up"
             android:theme="@style/Theme.Nutrity" />
         <activity
             android:name=".ui.login.LoginActivity"
