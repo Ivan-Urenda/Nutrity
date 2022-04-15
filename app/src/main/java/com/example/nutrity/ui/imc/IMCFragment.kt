@@ -10,12 +10,16 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.nutrity.R
 import com.example.nutrity.databinding.IMCFragmentBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class IMCFragment : Fragment() {
 
     private var _binding: IMCFragmentBinding? = null
+    private val db = Firebase.firestore
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -51,6 +55,7 @@ class IMCFragment : Fragment() {
 
         binding.calculateButton.setOnClickListener {
 
+            var cal: Int
             if(binding.genero.selectedItem.toString() == "Men"){
                 if(binding.weight.text.toString().isEmpty() || binding.height.text.toString().isEmpty() || binding.age.toString().isEmpty()){
                     Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT).show()
@@ -63,7 +68,7 @@ class IMCFragment : Fragment() {
                 else{
                     if(binding.fActividad.selectedItem.toString() == "Sedentary")
                     {
-                        var cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
+                        cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
                                 ((5 * binding.height.text.toString().toDouble()) - (6.8 * binding.age.text.toString().toDouble()))) * 1.2).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -82,7 +87,7 @@ class IMCFragment : Fragment() {
 
                     }else if(binding.fActividad.selectedItem.toString() == "Little activity"){
 
-                        var cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
+                        cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
                                 ((5 * binding.height.text.toString().toDouble()) - (6.8 * binding.age.text.toString().toDouble()))) * 1.375).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -101,7 +106,7 @@ class IMCFragment : Fragment() {
 
                     }else if(binding.fActividad.selectedItem.toString() == "Moderate activity"){
 
-                        var cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
+                        cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
                                 ((5 * binding.height.text.toString().toDouble()) - (6.8 * binding.age.text.toString().toDouble()))) * 1.55).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -121,7 +126,7 @@ class IMCFragment : Fragment() {
                     }
                     else
                     {
-                        var cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
+                        cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
                                 ((5 * binding.height.text.toString().toDouble()) - (6.8 * binding.age.text.toString().toDouble()))) * 1.725).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -139,6 +144,13 @@ class IMCFragment : Fragment() {
                         }
 
                     }
+
+                    db.collection("users")
+                        .document(Firebase.auth.currentUser?.email.toString()).set(
+                            hashMapOf(
+                                "calories" to cal
+                            )
+                        )
                 }
             }
             else{
@@ -153,7 +165,7 @@ class IMCFragment : Fragment() {
                 else{
                     if(binding.fActividad.selectedItem.toString() == "Sedentary")
                     {
-                        var cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
+                        cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
                                 ((1.8 * binding.height.text.toString().toDouble()) - (4.7 * binding.age.text.toString().toDouble()))) * 1.2).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -172,7 +184,7 @@ class IMCFragment : Fragment() {
 
                     }else if(binding.fActividad.selectedItem.toString() == "Little activity"){
 
-                        var cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
+                        cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
                                 ((1.8 * binding.height.text.toString().toDouble()) - (4.7 * binding.age.text.toString().toDouble()))) * 1.375).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -191,7 +203,7 @@ class IMCFragment : Fragment() {
 
                     }else if(binding.fActividad.selectedItem.toString() == "Moderate activity"){
 
-                        var cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
+                        cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
                                 ((1.8 * binding.height.text.toString().toDouble()) - (4.7 * binding.age.text.toString().toDouble()))) * 1.55).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -211,7 +223,7 @@ class IMCFragment : Fragment() {
                     }
                     else
                     {
-                        var cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
+                        cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
                                 ((1.8 * binding.height.text.toString().toDouble()) - (4.7 * binding.age.text.toString().toDouble()))) * 1.725).roundToInt()
 
                         if(binding.objetivo.selectedItem.toString() == "Lose weight")
@@ -229,6 +241,13 @@ class IMCFragment : Fragment() {
                         }
 
                     }
+
+                    db.collection("users")
+                        .document(Firebase.auth.currentUser?.email.toString()).set(
+                            hashMapOf(
+                                "calories" to cal
+                            )
+                        )
                 }
             }
 
