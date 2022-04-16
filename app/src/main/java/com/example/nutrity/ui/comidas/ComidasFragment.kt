@@ -17,6 +17,9 @@ import com.example.nutrity.adapter.RecipeAdapter
 import com.example.nutrity.models.RootObjectModel
 import com.example.nutrity.response.SearchRecipes
 import com.example.nutrity.utils.APICredential
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,6 +41,8 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
     private lateinit var adapter: RecipeAdapter
     private lateinit var searchView: android.widget.SearchView
     private lateinit var progressBar: ProgressBar
+    private val db = Firebase.firestore
+    private var day: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,6 +91,13 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
                 return@withContext apiClient.getRecipesBySearch(APICredential().TYPE,query, APICredential().APP_ID, APICredential().API_KEY)
             }
 
+            withContext(Dispatchers.IO){
+                db.collection("users")
+                    .document(Firebase.auth.currentUser?.email.toString()).get()
+                    .addOnCompleteListener { document ->
+                        day = document.result.get("day").toString().toInt()
+                    }
+            }
 
             searchRecipesCall.enqueue(object : Callback<SearchRecipes> {
                 override fun onResponse(call: Call<SearchRecipes>, response: Response<SearchRecipes>) {
@@ -93,7 +105,7 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
                         recipes = response.body()!!.getFoodRecipes()
                     }
                     recyclerView.layoutManager = LinearLayoutManager(context)
-                    adapter = RecipeAdapter(recipes)
+                    adapter = RecipeAdapter(recipes, day!!.toInt())
                     recyclerView.adapter = adapter
                     progressBar.visibility = View.GONE
 
@@ -107,6 +119,7 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
 
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

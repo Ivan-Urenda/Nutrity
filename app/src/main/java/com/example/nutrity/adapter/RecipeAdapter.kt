@@ -20,17 +20,24 @@ import com.example.nutrity.MainActivity
 import com.example.nutrity.R
 import com.example.nutrity.models.RootObjectModel
 import com.example.nutrity.ui.platillo.PlatilloFragment
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
 import kotlin.math.roundToInt
+import kotlin.properties.Delegates
 
-class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>): RecyclerView.Adapter<RecipeAdapter.FoodViewHolder>() {
+class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>, private var day: Int): RecyclerView.Adapter<RecipeAdapter.FoodViewHolder>() {
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recipes, parent, false)
-
         return FoodViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
+
+        Toast.makeText(holder.context, "$day", Toast.LENGTH_SHORT).show()
         holder.label.text = recipes[position].recipeModel.label
         holder.source.text = recipes[position].recipeModel.source
         holder.calories.text = ""+ recipes[position].recipeModel.calories.roundToInt()+" kcal"

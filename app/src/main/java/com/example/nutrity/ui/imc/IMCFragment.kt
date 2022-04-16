@@ -148,7 +148,8 @@ class IMCFragment : Fragment() {
                     db.collection("users")
                         .document(Firebase.auth.currentUser?.email.toString()).set(
                             hashMapOf(
-                                "calories" to cal
+                                "calories" to cal,
+                                "day" to 0
                             )
                         )
                 }
@@ -245,7 +246,8 @@ class IMCFragment : Fragment() {
                     db.collection("users")
                         .document(Firebase.auth.currentUser?.email.toString()).set(
                             hashMapOf(
-                                "calories" to cal
+                                "calories" to cal,
+                                "day" to 0
                             )
                         )
                 }
