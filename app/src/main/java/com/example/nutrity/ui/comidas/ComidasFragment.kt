@@ -41,8 +41,6 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
     private lateinit var adapter: RecipeAdapter
     private lateinit var searchView: android.widget.SearchView
     private lateinit var progressBar: ProgressBar
-    private val db = Firebase.firestore
-    private var day: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,21 +89,15 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
                 return@withContext apiClient.getRecipesBySearch(APICredential().TYPE,query, APICredential().APP_ID, APICredential().API_KEY)
             }
 
-            withContext(Dispatchers.IO){
-                db.collection("users")
-                    .document(Firebase.auth.currentUser?.email.toString()).get()
-                    .addOnCompleteListener { document ->
-                        day = document.result.get("day").toString().toInt()
-                    }
-            }
 
+            delay(1000)
             searchRecipesCall.enqueue(object : Callback<SearchRecipes> {
                 override fun onResponse(call: Call<SearchRecipes>, response: Response<SearchRecipes>) {
                     if (response.isSuccessful && response.body() != null){
                         recipes = response.body()!!.getFoodRecipes()
                     }
                     recyclerView.layoutManager = LinearLayoutManager(context)
-                    adapter = RecipeAdapter(recipes, day!!.toInt())
+                    adapter = RecipeAdapter(recipes)
                     recyclerView.adapter = adapter
                     progressBar.visibility = View.GONE
 

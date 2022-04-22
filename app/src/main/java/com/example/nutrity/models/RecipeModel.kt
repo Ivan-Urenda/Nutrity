@@ -11,6 +11,7 @@ data class RecipeModel (
     var image: String,
     var source: String,
     var calories: Float,
+    var yield: Int,
     var ingredientLines: ArrayList<String>,
     @SerializedName("images")
     @Expose()

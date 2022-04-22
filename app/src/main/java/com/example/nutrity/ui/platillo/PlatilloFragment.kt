@@ -14,9 +14,15 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.example.nutrity.R
+import com.example.nutrity.ui.calorias.CaloriasFragment
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.*
 
 
 class PlatilloFragment : Fragment(), SensorEventListener {
@@ -30,10 +36,11 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     private lateinit var carbs: TextView
     private lateinit var fat: TextView
     private lateinit var ScrollView: ScrollView
-    private lateinit var listView: ListView
+    private lateinit var addBtn: Button
     private lateinit var lvingredients: ListView
     private lateinit var arrayAdapter: ArrayAdapter<*>
     private lateinit var ingredients: ArrayList<String>
+    private var progress: Int? = null
 
     companion object {
         fun newInstance() = PlatilloFragment()
@@ -41,7 +48,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
 
     private lateinit var viewModel: PlatilloViewModel
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility", "SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,12 +63,13 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         fat = root.findViewById(R.id.fat)
         lvingredients = root.findViewById(R.id.lvIngredients)
         ScrollView = root.findViewById(R.id.miScrollView)
+        addBtn = root.findViewById(R.id.add_button)
 
 
         ingredients = arguments?.getStringArrayList("ingredients")!!
 
         recipeName.text = arguments?.getString("name")
-        calories.text = arguments?.getString("calories")
+        calories.text = arguments?.getString("calories")+" kcal"
         Picasso.get().load(arguments?.getString("image")).into(recetaImage)
         proteins.text = arguments?.getString("proteins")
         carbs.text = arguments?.getString("carbs")
@@ -79,6 +87,37 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                 MotionEvent.ACTION_UP -> ScrollView.requestDisallowInterceptTouchEvent(false)
             }
             false
+        }
+
+        addBtn.setOnClickListener {
+
+            GlobalScope.launch(Dispatchers.Main) {
+                var calories: Int? = null
+
+                withContext(Dispatchers.IO){
+                    Firebase.firestore.collection("users")
+                        .document(Firebase.auth.currentUser?.email.toString()).get()
+                        .addOnCompleteListener { document ->
+                            calories = document.result.get("day").toString().toInt()
+                        }
+                }
+
+                delay(1000)
+                val pS = arguments?.getString("calories")
+                progress = pS?.toInt() !!+ calories!!
+                Firebase.firestore.collection("users")
+                    .document(Firebase.auth.currentUser?.email.toString()).update("day", progress)
+
+                Toast.makeText(context, "Dish added to your day", Toast.LENGTH_SHORT).show()
+
+                Firebase.firestore.collection("users")
+                    .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded")
+                    .document(arguments?.getString("name").toString()).set(
+                        hashMapOf(
+                            "void" to 0
+                        )
+                    )
+            }
         }
 
         return root

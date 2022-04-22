@@ -27,7 +27,7 @@ import kotlinx.coroutines.*
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
-class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>, private var day: Int): RecyclerView.Adapter<RecipeAdapter.FoodViewHolder>() {
+class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>): RecyclerView.Adapter<RecipeAdapter.FoodViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
@@ -37,16 +37,16 @@ class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>, private var
 
     override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
 
-        Toast.makeText(holder.context, "$day", Toast.LENGTH_SHORT).show()
         holder.label.text = recipes[position].recipeModel.label
         holder.source.text = recipes[position].recipeModel.source
-        holder.calories.text = ""+ recipes[position].recipeModel.calories.roundToInt()+" kcal"
+        holder.yield.text = recipes[position].recipeModel.yield.toString() + " portions"
+        holder.calories.text = ""+ (recipes[position].recipeModel.calories.roundToInt() / recipes[position].recipeModel.yield.toString().toInt())+" kcal per portion"
         Glide.with(holder.itemView.context).load(recipes[position].recipeModel.image).centerCrop().diskCacheStrategy(
             DiskCacheStrategy.ALL).into(holder.imageView)
         holder.cardView.setOnClickListener {
             val navController= Navigation.findNavController((holder.context) as Activity, R.id.nav_host_fragment_content_main)
             val bundle = bundleOf("name" to holder.label.text.toString(),
-                "calories" to recipes[position].recipeModel.calories.roundToInt().toString()+" kcal",
+                "calories" to (recipes[position].recipeModel.calories.roundToInt() / recipes[position].recipeModel.yield.toString().toInt()).toString(),
                 "proteins" to recipes[position].recipeModel.rootNutrientsModel.protein.quantity.roundToInt().toString()+" g",
                 "carbs" to recipes[position].recipeModel.rootNutrientsModel.carbs.quantity.roundToInt().toString()+" g",
                 "fat" to recipes[position].recipeModel.rootNutrientsModel.fat.quantity.roundToInt().toString()+" g",
@@ -70,6 +70,7 @@ class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>, private var
         var label: TextView = itemView.findViewById(R.id.text_label)
         var source: TextView = itemView.findViewById(R.id.text_src)
         var calories: TextView = itemView.findViewById(R.id.text_calories)
+        var yield: TextView = itemView.findViewById(R.id.text_yield)
         var imageView: ImageView = itemView.findViewById(R.id.ivRecipe)
         var cardView: CardView = itemView.findViewById(R.id.Cardv)
         var context: Context = view.context

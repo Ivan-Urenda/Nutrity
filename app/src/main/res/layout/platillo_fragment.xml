@@ -92,7 +92,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:text="Calories"
+                    android:text="Calories per portion"
                     android:textAlignment="center"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="14sp"
