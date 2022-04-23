@@ -33,17 +33,17 @@ class Forgot_pass_Activity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding = ActivityForgotPassBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_forgot_pass)
+        setContentView(binding.root)
 
         // Initializing FirebaseAuth
         auth = Firebase.auth
 
         with(binding) {
-            emailField.setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus) cleanErrors(emailField, emailLayout)
+            emailPasswordReset.setOnFocusChangeListener { _, hasFocus ->
+                if(hasFocus) cleanErrors(emailPasswordReset, emailPasswordResetLayout)
             }
 
-            loginAccountLink.setOnClickListener {
+            loginAccountAfterLink.setOnClickListener {
                 val intent = Intent(binding.root.context, LoginActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
@@ -51,9 +51,14 @@ class Forgot_pass_Activity : AppCompatActivity() {
                 finish()
             }
 
-            submitBtn.setOnClickListener {
-                val email = emailField.text.toString().trim()
-                passwordReset(email)
+            passwordResetBtn.setOnClickListener {
+                try {
+                    val email = emailPasswordReset.text.toString().trim()
+                    passwordReset(email)
+                    Log.d("PassReset", "Password resent event applied.")
+                } catch (e: Exception) {
+                    Log.e("PassReset", "Somethign went wrong.", e)
+                }
             }
         }
     }
@@ -65,19 +70,21 @@ class Forgot_pass_Activity : AppCompatActivity() {
 
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener {
-                loading.isDismiss()
-                val snackbar = Snackbar.make(
-                    binding.root,
-                    "Password reset email sent. Verify your inbox.",
-                    Snackbar.LENGTH_INDEFINITE
-                ).apply {
-                    setAction(
-                        "DISMISS", View.OnClickListener {
-                            dismiss()
-                        }
-                    )
+                if(it.isSuccessful) {
+                    loading.isDismiss()
+                    val snackbar = Snackbar.make(
+                        binding.root,
+                        "Password reset email sent. Verify your inbox.",
+                        Snackbar.LENGTH_INDEFINITE
+                    ).apply {
+                        setAction(
+                            "DISMISS", View.OnClickListener {
+                                dismiss()
+                            }
+                        )
+                    }
+                    snackbar.show()
                 }
-                snackbar.show()
             }
             .addOnFailureListener { e ->
                 Log.w("ForgotPass", "Something went wrong sending recovering the account. ", e)
@@ -107,14 +114,14 @@ class Forgot_pass_Activity : AppCompatActivity() {
         var valid = true
 
         if (TextUtils.isEmpty(email)) {
-            binding.emailField.error = "This field is required."
-            binding.emailLayout.helperText = getString(R.string.signForm_helperText)
-            binding.emailLayout.isHelperTextEnabled = true
+            binding.emailPasswordReset.error = "This field is required."
+            binding.emailPasswordResetLayout.helperText = getString(R.string.signForm_helperText)
+            binding.emailPasswordResetLayout.isHelperTextEnabled = true
             valid = false
         } else {
-            binding.emailField.error = null
-            binding.emailLayout.helperText = getString(R.string.blank)
-            binding.emailLayout.isHelperTextEnabled = false
+            binding.emailPasswordReset.error = null
+            binding.emailPasswordResetLayout.helperText = getString(R.string.blank)
+            binding.emailPasswordResetLayout.isHelperTextEnabled = false
         }
 
         return valid

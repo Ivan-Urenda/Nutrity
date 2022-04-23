@@ -1,17 +1,11 @@
 package com.example.nutrity.ui.signup
 
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
-import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import com.example.nutrity.MainActivity
 import com.example.nutrity.ProviderType
 import com.example.nutrity.R
@@ -140,7 +134,11 @@ class SignupActivity : AppCompatActivity() {
 
         docRef.set(user)
             .addOnCompleteListener {
-                Log.d("FirebaseFirestore", "Documents successfully uploaded.")
+                if(it.isSuccessful) {
+                    Log.d("FirebaseFirestore", "Documents successfully uploaded.")
+                } else {
+                    Log.w("FirebaseFirestore", "Documents was not uploaded.", it.exception)
+                }
             }
             .addOnFailureListener { e ->
                 Log.w("FirebaseFirestore", "Documents was not uploaded.", e)

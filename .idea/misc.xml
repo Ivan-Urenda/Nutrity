@@ -14,14 +14,7 @@
         <entry key="..\:/Proyectos/Nutrity/app/src/main/res/layout/content_main.xml" value="0.22826086956521738" />
         <entry key="..\:/Proyectos/Nutrity/app/src/main/res/layout/fragment_recetas.xml" value="0.22826086956521738" />
         <entry key="..\:/Proyectos/Nutrity/app/src/main/res/layout/nav_header_main.xml" value="0.22826086956521738" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/drawable/circle_user_solid.xml" value="0.329" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/activity_forgot_pass.xml" value="0.34479166666666666" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/activity_login.xml" value="0.34479166666666666" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/activity_main.xml" value="0.34479166666666666" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/activity_signup.xml" value="0.5360323886639676" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/activity_user_profile_config.xml" value="0.33" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/email_verification.xml" value="0.5" />
-        <entry key="..\:/Users/erick/Documents/Code/kotlin/Nutrity/app/src/main/res/layout/loading_item.xml" value="0.34479166666666666" />
+        <entry key="..\:/Users/erick/Documents/code/kotlin/Nutrity/app/src/main/res/layout/activity_forgot_pass.xml" value="0.2" />
         <entry key="..\:/Users/ivanu/Desktop/Movilesapp/APPMOVILES/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/ivanu/Desktop/Movilesapp/APPMOVILES/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/ivanu/Desktop/Movilesapp/APPMOVILES/app/src/main/res/drawable/ic_menu_camera.xml" value="0.1" />
@@ -66,7 +59,8 @@
         <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/i_m_c_fragment.xml" value="0.176" />
         <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/item_ingredients.xml" value="0.16216216216216217" />
         <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/item_recipes.xml" value="0.2830820770519263" />
-        <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/platillo_fragment.xml" value="0.176" />
+        <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/nav_header_main.xml" value="0.16216216216216217" />
+        <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/platillo_fragment.xml" value="0.1" />
         <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/layout/spinner_items.xml" value="0.16216216216216217" />
         <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/menu/activity_main_drawer.xml" value="0.16216216216216217" />
         <entry key="..\:/Users/ivanu/Desktop/Nutrity/Nutrity/app/src/main/res/menu/main.xml" value="0.16216216216216217" />

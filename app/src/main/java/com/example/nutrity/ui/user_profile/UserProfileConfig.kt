@@ -142,10 +142,11 @@ class UserProfileConfig : AppCompatActivity() {
         if(!validateForm(username, firstname, lastname)) return
 
         // create a new user with a username, firstname and lastname
-        val user = hashMapOf(
+        val user = mutableMapOf<String, Any>(
             "username" to username,
             "firstname" to firstname,
-            "lastname" to lastname
+            "lastname" to lastname,
+            "userProfileEdited" to true
         )
 
         val userAuth = Firebase.auth.currentUser
@@ -154,7 +155,7 @@ class UserProfileConfig : AppCompatActivity() {
 
         val docRef = fireDb.collection("users").document("${userAuth?.email}")
 
-        docRef.set(user)
+        docRef.update(user)
             .addOnCompleteListener {
                 // If user has set a different image,
                 // then upload image to firebase

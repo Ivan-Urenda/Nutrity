@@ -8,7 +8,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.nutrity.ui.email_verification.EmailVerification
 import com.example.nutrity.MainActivity
-import com.example.nutrity.ProviderType
 import com.example.nutrity.R
 import com.example.nutrity.databinding.ActivityLoginBinding
 import com.example.nutrity.ui.forgot_pass.Forgot_pass_Activity
@@ -23,8 +22,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 
 class LoginActivity : AppCompatActivity() {
 
@@ -125,18 +122,28 @@ class LoginActivity : AppCompatActivity() {
 
     private fun userHasAProfile(email: String) {
         val docRef = fireDb.collection("users").document(email)
+
         docRef.get()
             .addOnSuccessListener { result ->
-                val userProfileEdited = result.getBoolean("userProfiledEdited")!!
-
-                if(!userProfileEdited) {
+                val userHasEditedProfile = result.data?.getValue("userProfileEdited") as Boolean
+                if(!userHasEditedProfile) {
                     redirectToUserProfile(email)
                 } else {
-                    redirectToHome(email)
+                    redirectToHome("email")
                 }
             }
             .addOnFailureListener { e ->
-                Log.w("CloudFirestore", "Error getting documents.", e)
+                val snack = Snackbar.make(
+                    binding.root,
+                    "Authentication failed. Try again later.",
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction("DISMISS", View.OnClickListener {
+                       dismiss()
+                    })
+                }
+                snack.show()
+                Log.w("SnapshotUserProfile", "Error comparing if user has edited its profile.", e)
             }
     }
 
