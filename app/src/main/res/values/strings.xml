@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Nutrity</string>
+    <string name="app_logo_desc">Nutrity Logo</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Ivan Urenda</string>
@@ -7,8 +8,44 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!--  Login/CreateAccount - START  -->
     <string name="OlvideContra"><u>Olvidé mi contraseña</u></string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_pass_hint">Confirm Password</string>
+    <string name="forgot_pass">Forgot password?</string>
+    <string name="btn_login">Log In</string>
+    <string name="btn_create_account">Create Account</string>
+    <string name="register_text">Or register below</string>
+    <string name="have_account_text">Do you already have an account?</string>
+    <string name="progress_loading">Loading…</string>
+    <string name="signForm_helperText">This field is required.</string>
+    <string name="blank">&#160;</string>
+    <string name="password_dntMatch">Passwords must match. Try again.</string>
+    <string name="snackbar_dismiss">Dismiss</string>
+    <string name="email_verification">Please verify your account with the email sent to your mailbox.</string>
+    <!-- Login/CreateAccount - END  -->
 
+    <!--  Email Verification - START -->
+    <string name="resend_email">Resend Email</string>
+    <string name="email_verification_desc">Email Verification Sent.</string>
+    <!--  Email Verification - END -->
+    <!-- UserConfiguration Activity - START -->
+    <string name="user_name">User Name</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="get_started">Let\'s Get Started!</string>
+    <!-- UserConfiguration Activity - END -->
+    <!--  Forgot Password Activity - START  -->
+    <string name="recover_account">Recover Your Account</string>
+    <string name="new_password_hint">New password</string>
+    <string name="confirm_new_password_hint">Confirm new password</string>
+    <string name="try_login_divider_forget_pass">Try to login after resetting your password.</string>
+    <!--  Forgot Password Activity - END  -->
+    <!--  Fab buttons  -->
+    <string name="add_photo">Add a photo</string>
+    <string name="change_profile_pic">Change profile picture</string>
+    <!--  END FAB Buttons  -->
     <string name="menu_home">Home</string>
     <string name="menu_calorias">Calorias</string>
     <string name="menu_recetas">Recipes</string>
@@ -24,11 +61,14 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
 
-    //Recetas
+    <!--  Recetas  -->
     <string name="tituloConfig">Recetas para cada comida del día</string>
     <string name="desayuno">Desayuno</string>
     <string name="almuerzo">Almuerzo</string>
     <string name="comida">Comida</string>
     <string name="cena">Cena</string>
 
+    <!--  Generic texts  -->
+    <string name="next">Next</string>
+    <string name="done">Done</string>
 </resources>
