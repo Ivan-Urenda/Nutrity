@@ -47,9 +47,9 @@ class RecipeAdapter(private var recipes: ArrayList<RootObjectModel>): RecyclerVi
             val navController= Navigation.findNavController((holder.context) as Activity, R.id.nav_host_fragment_content_main)
             val bundle = bundleOf("name" to holder.label.text.toString(),
                 "calories" to (recipes[position].recipeModel.calories.roundToInt() / recipes[position].recipeModel.yield.toString().toInt()).toString(),
-                "proteins" to recipes[position].recipeModel.rootNutrientsModel.protein.quantity.roundToInt().toString()+" g",
-                "carbs" to recipes[position].recipeModel.rootNutrientsModel.carbs.quantity.roundToInt().toString()+" g",
-                "fat" to recipes[position].recipeModel.rootNutrientsModel.fat.quantity.roundToInt().toString()+" g",
+                "proteins" to recipes[position].recipeModel.rootNutrientsModel.protein.quantity.roundToInt().toString(),
+                "carbs" to recipes[position].recipeModel.rootNutrientsModel.carbs.quantity.roundToInt().toString(),
+                "fat" to recipes[position].recipeModel.rootNutrientsModel.fat.quantity.roundToInt().toString(),
                 "ingredients" to recipes[position].recipeModel.ingredientLines,
                 "image" to recipes[position].recipeModel.image)
             navController.navigate(R.id.platilloFragment, bundle)

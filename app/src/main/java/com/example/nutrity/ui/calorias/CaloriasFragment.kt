@@ -1,6 +1,7 @@
 package com.example.nutrity.ui.calorias
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -26,10 +27,14 @@ class CaloriasFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var day: String
     private lateinit var objective: String
+    private lateinit var proteins: String
+    private lateinit var carbs: String
+    private lateinit var fats: String
     private lateinit var progressBar: ProgressBar
     private var recipes = arrayListOf<String>()
     private lateinit var arrayAdapter: ArrayAdapter<*>
 
+    @SuppressLint("SetTextI18n")
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +58,10 @@ class CaloriasFragment : Fragment() {
                     .addOnCompleteListener { document ->
                         day = document.result.get("day").toString()
                         objective = document.result.get("calories").toString()
+                        proteins = document.result.get("proteins").toString()
+                        carbs = document.result.get("carbs").toString()
+                        fats = document.result.get("fats").toString()
+
                     }
                 Firebase.firestore.collection("users")
                     .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded").get()
@@ -71,6 +80,9 @@ class CaloriasFragment : Fragment() {
 
             binding.actualCalories.text = day
             binding.objetivoCalories.text = objective
+            binding.proteins.text = "$proteins g"
+            binding.carbs.text = "$carbs g"
+            binding.fats.text = "$fats g"
 
             arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, recipes)
             binding.lvRecipes.adapter = arrayAdapter

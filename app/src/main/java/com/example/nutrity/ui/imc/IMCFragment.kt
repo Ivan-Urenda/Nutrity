@@ -149,7 +149,10 @@ class IMCFragment : Fragment() {
                         .document(Firebase.auth.currentUser?.email.toString()).set(
                             hashMapOf(
                                 "calories" to cal,
-                                "day" to 0
+                                "day" to 0,
+                                "proteins" to 0,
+                                "carbs" to 0,
+                                "fats" to 0
                             )
                         )
                 }

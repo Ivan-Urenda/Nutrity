@@ -41,6 +41,9 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     private lateinit var arrayAdapter: ArrayAdapter<*>
     private lateinit var ingredients: ArrayList<String>
     private var progress: Int? = null
+    private var progressProteins: Int? = null
+    private var progressCarbs: Int? = null
+    private var progressFats: Int? = null
 
     companion object {
         fun newInstance() = PlatilloFragment()
@@ -71,9 +74,9 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         recipeName.text = arguments?.getString("name")
         calories.text = arguments?.getString("calories")+" kcal"
         Picasso.get().load(arguments?.getString("image")).into(recetaImage)
-        proteins.text = arguments?.getString("proteins")
-        carbs.text = arguments?.getString("carbs")
-        fat.text = arguments?.getString("fat")
+        proteins.text = arguments?.getString("proteins")+" g"
+        carbs.text = arguments?.getString("carbs")+" g"
+        fat.text = arguments?.getString("fat")+" g"
 
         arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ingredients)
         lvingredients.adapter = arrayAdapter
@@ -93,20 +96,39 @@ class PlatilloFragment : Fragment(), SensorEventListener {
 
             GlobalScope.launch(Dispatchers.Main) {
                 var calories: Int? = null
+                var proteins: Int? = null
+                var carbs: Int? = null
+                var fats: Int? = null
 
                 withContext(Dispatchers.IO){
                     Firebase.firestore.collection("users")
                         .document(Firebase.auth.currentUser?.email.toString()).get()
                         .addOnCompleteListener { document ->
                             calories = document.result.get("day").toString().toInt()
+                            proteins = document.result.get("proteins").toString().toInt()
+                            carbs = document.result.get("carbs").toString().toInt()
+                            fats = document.result.get("fats").toString().toInt()
                         }
                 }
 
                 delay(1000)
-                val pS = arguments?.getString("calories")
-                progress = pS?.toInt() !!+ calories!!
+                val calString = arguments?.getString("calories")
+                val proteinString = arguments?.getString("proteins")
+                val carbsString = arguments?.getString("carbs")
+                val fatsString = arguments?.getString("fat")
+
+                progress = calString?.toInt() !!+ calories!!
+                progressProteins = proteinString?.toInt() !!+ proteins!!
+                progressCarbs = carbsString?.toInt() !!+ carbs!!
+                progressFats = fatsString?.toInt() !!+ fats!!
+
+
                 Firebase.firestore.collection("users")
-                    .document(Firebase.auth.currentUser?.email.toString()).update("day", progress)
+                    .document(Firebase.auth.currentUser?.email.toString()).update(
+                        "day", progress,
+                        "proteins", progressProteins,
+                                            "carbs", progressCarbs,
+                                                "fats", progressFats)
 
                 Toast.makeText(context, "Dish added to your day", Toast.LENGTH_SHORT).show()
 
