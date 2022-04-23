@@ -112,6 +112,10 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.SearchComidas.setQuery("", false)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

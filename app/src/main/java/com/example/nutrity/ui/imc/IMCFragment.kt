@@ -7,19 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import com.example.nutrity.R
 import com.example.nutrity.databinding.IMCFragmentBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class IMCFragment : Fragment() {
 
     private var _binding: IMCFragmentBinding? = null
     private val db = Firebase.firestore
+    private lateinit var objetivo: Spinner
+    private lateinit var genero: Spinner
+    private lateinit var fActividad: Spinner
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -37,21 +40,20 @@ class IMCFragment : Fragment() {
         val root: View = binding.root
 
         val appContext = requireContext().applicationContext
-        val objetivo = binding.objetivo
-        val objetivos = listOf("Lose weight", "Gain weight", "Maintain weight")
-        var adaptador = ArrayAdapter(appContext, R.layout.spinner_items, objetivos)
+        objetivo = binding.objetivo
+        val objectives = listOf("Lose weight", "Gain weight", "Maintain weight")
+        var adaptador = ArrayAdapter(appContext, R.layout.spinner_items, objectives)
         objetivo.adapter = adaptador
 
-        val genero = binding.genero
-        val generos = listOf("Men", "Women")
-        adaptador = ArrayAdapter(appContext, R.layout.spinner_items, generos)
+        genero = binding.genero
+        val genres = listOf("Men", "Women")
+        adaptador = ArrayAdapter(appContext, R.layout.spinner_items, genres)
         genero.adapter = adaptador
 
-        val fActividad = binding.fActividad
-        val fActividades = listOf("Sedentary", "Little activity", "Moderate activity", "Intense activity")
-        adaptador = ArrayAdapter(appContext, R.layout.spinner_items, fActividades)
+        fActividad = binding.fActividad
+        val fActivities = listOf("Sedentary", "Little activity", "Moderate activity", "Intense activity")
+        adaptador = ArrayAdapter(appContext, R.layout.spinner_items, fActivities)
         fActividad.adapter = adaptador
-
 
         binding.calculateButton.setOnClickListener {
 
@@ -259,6 +261,17 @@ class IMCFragment : Fragment() {
         }
 
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        objetivo.setSelection(0)
+        genero.setSelection(0)
+        fActividad.setSelection(0)
+
+        binding.weight.text.clear()
+        binding.height.text.clear()
+        binding.age.text.clear()
     }
 
     override fun onDestroyView() {

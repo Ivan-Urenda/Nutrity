@@ -1,10 +1,10 @@
 package com.example.nutrity.ui.calorias
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +17,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
+import java.util.ArrayList
 
 class CaloriasFragment : Fragment() {
 
@@ -30,12 +31,11 @@ class CaloriasFragment : Fragment() {
     private lateinit var proteins: String
     private lateinit var carbs: String
     private lateinit var fats: String
+    private val db = Firebase.firestore
     private lateinit var progressBar: ProgressBar
-    private var recipes = arrayListOf<String>()
+    private lateinit var recipes: ArrayList<String>
     private lateinit var arrayAdapter: ArrayAdapter<*>
 
-    @SuppressLint("SetTextI18n")
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,10 +50,23 @@ class CaloriasFragment : Fragment() {
         progressBar = binding.pBar
         progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#38B745"))
 
+        loadData()
+
+        binding.startDayButton.setOnClickListener {
+
+            alertDialog()
+        }
+
+        return root
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    fun loadData(){
         GlobalScope.launch(Dispatchers.Main) {
+            recipes = arrayListOf<String>()
 
             withContext(Dispatchers.IO){
-                Firebase.firestore.collection("users")
+                db.collection("users")
                     .document(Firebase.auth.currentUser?.email.toString()).get()
                     .addOnCompleteListener { document ->
                         day = document.result.get("day").toString()
@@ -63,7 +76,7 @@ class CaloriasFragment : Fragment() {
                         fats = document.result.get("fats").toString()
 
                     }
-                Firebase.firestore.collection("users")
+                db.collection("users")
                     .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded").get()
                     .addOnCompleteListener {
                         for (document in it.result){
@@ -78,8 +91,8 @@ class CaloriasFragment : Fragment() {
                 .setDuration(2000)
                 .start()
 
-            binding.actualCalories.text = day
-            binding.objetivoCalories.text = objective
+            binding.actualCalories.text = day+" kcal"
+            binding.objetivoCalories.text = objective+" kcal"
             binding.proteins.text = "$proteins g"
             binding.carbs.text = "$carbs g"
             binding.fats.text = "$fats g"
@@ -87,8 +100,39 @@ class CaloriasFragment : Fragment() {
             arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, recipes)
             binding.lvRecipes.adapter = arrayAdapter
         }
+    }
 
-        return root
+    private fun alertDialog(){
+
+        AlertDialog.Builder(context).apply {
+            setTitle("Alert")
+            setMessage("Are you sure you want to start your day? Your previous progress will be reset.")
+            setPositiveButton("Yes") {_: DialogInterface, _: Int ->
+                deleteData()
+                loadData()
+            }
+            setNegativeButton("No", null)
+        }.show()
+
+    }
+
+    private fun deleteData()
+    {
+        recipes.forEach {
+            db.collection("users")
+                .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded")
+                .document(it).delete()
+        }
+        db.collection("users")
+            .document(Firebase.auth.currentUser?.email.toString()).set(
+                hashMapOf(
+                    "calories" to objective,
+                    "day" to 0,
+                    "proteins" to 0,
+                    "carbs" to 0,
+                    "fats" to 0
+                )
+            )
     }
 
     override fun onDestroyView() {
