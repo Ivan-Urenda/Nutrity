@@ -148,8 +148,8 @@ class IMCFragment : Fragment() {
                     }
 
                     db.collection("users")
-                        .document(Firebase.auth.currentUser?.email.toString()).set(
-                            hashMapOf(
+                        .document(Firebase.auth.currentUser?.email.toString()).update(
+                            mutableMapOf<String, Any>(
                                 "calories" to cal,
                                 "day" to 0,
                                 "proteins" to 0,
@@ -249,10 +249,13 @@ class IMCFragment : Fragment() {
                     }
 
                     db.collection("users")
-                        .document(Firebase.auth.currentUser?.email.toString()).set(
-                            hashMapOf(
+                        .document(Firebase.auth.currentUser?.email.toString()).update(
+                            mutableMapOf<String, Any>(
                                 "calories" to cal,
-                                "day" to 0
+                                "day" to 0,
+                                "proteins" to 0,
+                                "carbs" to 0,
+                                "fats" to 0
                             )
                         )
                 }

@@ -129,7 +129,12 @@ class SignupActivity : AppCompatActivity() {
 
         val user = hashMapOf(
             "currentEmail" to email,
-            "userProfileEdited" to false
+            "userProfileEdited" to false,
+            "calories" to 0,
+            "day" to 0,
+            "proteins" to 0,
+            "carbs" to 0,
+            "fats" to 0
         )
 
         docRef.set(user)

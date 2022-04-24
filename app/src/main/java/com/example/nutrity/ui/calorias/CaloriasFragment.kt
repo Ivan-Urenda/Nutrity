@@ -124,9 +124,8 @@ class CaloriasFragment : Fragment() {
                 .document(it).delete()
         }
         db.collection("users")
-            .document(Firebase.auth.currentUser?.email.toString()).set(
-                hashMapOf(
-                    "calories" to objective,
+            .document(Firebase.auth.currentUser?.email.toString()).update(
+                mutableMapOf<String, Any>(
                     "day" to 0,
                     "proteins" to 0,
                     "carbs" to 0,

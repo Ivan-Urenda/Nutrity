@@ -125,10 +125,13 @@ class PlatilloFragment : Fragment(), SensorEventListener {
 
                 Firebase.firestore.collection("users")
                     .document(Firebase.auth.currentUser?.email.toString()).update(
-                        "day", progress,
-                        "proteins", progressProteins,
-                                            "carbs", progressCarbs,
-                                                "fats", progressFats)
+                        mutableMapOf<String, Any>(
+                            "day" to progress.toString(),
+                            "proteins" to progressProteins.toString(),
+                            "carbs" to progressCarbs.toString(),
+                            "fats" to progressFats.toString()
+                        )
+                    )
 
                 Toast.makeText(context, "Dish added to your day", Toast.LENGTH_SHORT).show()
 
