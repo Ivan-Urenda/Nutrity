@@ -5,4 +5,7 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <!--  Form paddings/margin  -->
+    <dimen name="linear_form_m">24dp</dimen>
+    <dimen name="form_pd_x">4dp</dimen>
 </resources>
