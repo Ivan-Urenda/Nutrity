@@ -61,11 +61,11 @@ class CaloriasFragment : Fragment() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun loadData(){
+    fun loadData() {
         GlobalScope.launch(Dispatchers.Main) {
             recipes = arrayListOf<String>()
 
-            withContext(Dispatchers.IO){
+            withContext(Dispatchers.IO) {
                 db.collection("users")
                     .document(Firebase.auth.currentUser?.email.toString()).get()
                     .addOnCompleteListener { document ->
@@ -77,9 +77,10 @@ class CaloriasFragment : Fragment() {
 
                     }
                 db.collection("users")
-                    .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded").get()
+                    .document(Firebase.auth.currentUser?.email.toString())
+                    .collection("recipesAdded").get()
                     .addOnCompleteListener {
-                        for (document in it.result){
+                        for (document in it.result) {
                             recipes.add(document.id)
                         }
                     }
@@ -91,23 +92,24 @@ class CaloriasFragment : Fragment() {
                 .setDuration(2000)
                 .start()
 
-            binding.actualCalories.text = day+" kcal"
-            binding.objetivoCalories.text = objective+" kcal"
+            binding.actualCalories.text = day + " kcal"
+            binding.objetivoCalories.text = objective + " kcal"
             binding.proteins.text = "$proteins g"
             binding.carbs.text = "$carbs g"
             binding.fats.text = "$fats g"
 
-            arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, recipes)
+            arrayAdapter =
+                ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, recipes)
             binding.lvRecipes.adapter = arrayAdapter
         }
     }
 
-    private fun alertDialog(){
+    private fun alertDialog() {
 
         AlertDialog.Builder(context).apply {
             setTitle("Alert")
             setMessage("Are you sure you want to start your day? Your previous progress will be reset.")
-            setPositiveButton("Yes") {_: DialogInterface, _: Int ->
+            setPositiveButton("Yes") { _: DialogInterface, _: Int ->
                 deleteData()
                 loadData()
             }
@@ -116,8 +118,7 @@ class CaloriasFragment : Fragment() {
 
     }
 
-    private fun deleteData()
-    {
+    private fun deleteData() {
         recipes.forEach {
             db.collection("users")
                 .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded")

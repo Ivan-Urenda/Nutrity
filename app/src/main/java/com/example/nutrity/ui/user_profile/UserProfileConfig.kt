@@ -1,13 +1,10 @@
 package com.example.nutrity.ui.user_profile
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
@@ -15,10 +12,14 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.nutrity.MainActivity
 import com.example.nutrity.R
+import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.databinding.ActivityUserProfileConfigBinding
 import com.example.nutrity.uielements.Loading
 import com.google.android.material.snackbar.Snackbar
@@ -141,39 +142,26 @@ class UserProfileConfig : AppCompatActivity() {
     ) {
         if(!validateForm(username, firstname, lastname)) return
 
-        // create a new user with a username, firstname and lastname
-        val user = mutableMapOf<String, Any>(
-            "username" to username,
-            "firstname" to firstname,
-            "lastname" to lastname,
-            "userProfileEdited" to true
-        )
+        val state = intent.extras!!.getBoolean("state")
+        val email = intent.extras!!.getString("email")
+        prefs.saveLogged(state)
 
-        val userAuth = Firebase.auth.currentUser
+        val request = Volley.newRequestQueue(this)
 
-        loading.startDialog()
+        var url = "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
+                "&lastName=${lastname}" + "&username=${username}&profileEdited=${1}"
 
-        val docRef = fireDb.collection("users").document("${userAuth?.email}")
+        url=url.replace(" ", "%20")
+        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-        docRef.update(user)
-            .addOnCompleteListener {
-                // If user has set a different image,
-                // then upload image to firebase
-                if(photoHasChanged) uploadImage()
+            Toast.makeText(this, ""+response.toString(), Toast.LENGTH_SHORT).show()
+            redirectToHome()
+        }, { error ->
 
-                Log.d(TAG, "DocumentSnapshot added with ID: $taskId")
-                loading.isDismiss()
-                redirectToHome()
-            }
-            .addOnFailureListener { e ->
-                loading.isDismiss()
-                Log.w(TAG, "Error adding document", e)
-                Snackbar.make(
-                    binding.root,
-                    "Something went wrong. Try again.",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
+            Toast.makeText(this, ""+error.toString(), Toast.LENGTH_SHORT).show()
+        })
+        request.add(stringRequest)
+
     }
 
     private fun uploadImage() {

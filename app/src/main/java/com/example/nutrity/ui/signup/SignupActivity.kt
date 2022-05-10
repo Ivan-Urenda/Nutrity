@@ -6,6 +6,10 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.nutrity.MainActivity
 import com.example.nutrity.ProviderType
 import com.example.nutrity.R
@@ -125,29 +129,17 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun uploadUser(email: String) {
-        val docRef = fireDb.collection("users").document(email)
+        val request = Volley.newRequestQueue(this)
 
-        val user = hashMapOf(
-            "currentEmail" to email,
-            "userProfileEdited" to false,
-            "calories" to 0,
-            "day" to 0,
-            "proteins" to 0,
-            "carbs" to 0,
-            "fats" to 0
-        )
+        var url = "https://ivanurenda.000webhostapp.com/Registro.php?email=${email}"
+        url=url.replace(" ", "%20")
+        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-        docRef.set(user)
-            .addOnCompleteListener {
-                if(it.isSuccessful) {
-                    Log.d("FirebaseFirestore", "Documents successfully uploaded.")
-                } else {
-                    Log.w("FirebaseFirestore", "Documents was not uploaded.", it.exception)
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.w("FirebaseFirestore", "Documents was not uploaded.", e)
-            }
+            Toast.makeText(this, "Registro guardado", Toast.LENGTH_SHORT).show()
+        }, { error ->
+
+        })
+        request.add(stringRequest)
     }
 
     private fun sendVerificationEmail(email: String, providerType: ProviderType) {
@@ -214,7 +206,8 @@ class SignupActivity : AppCompatActivity() {
                 Snackbar.make(
                     binding.root,
                     R.string.password_dntMatch,
-                    Snackbar.LENGTH_SHORT)
+                    Snackbar.LENGTH_SHORT
+                )
                     .show()
                 valid = false
             } else {
@@ -238,14 +231,14 @@ class SignupActivity : AppCompatActivity() {
         inputLayout.isHelperTextEnabled = false
         inputLayout.helperText = getString(R.string.blank)
     }
+
     companion object {
         private const val TAG = "CreateAccountStatus"
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when(item.itemId)
-        {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true

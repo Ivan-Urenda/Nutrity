@@ -27,8 +27,8 @@ import kotlinx.coroutines.*
 
 class PlatilloFragment : Fragment(), SensorEventListener {
 
-    var sensorManager: SensorManager?= null
-    var sensor: Sensor?= null
+    var sensorManager: SensorManager? = null
+    var sensor: Sensor? = null
     private lateinit var recetaImage: ImageView
     private lateinit var recipeName: TextView
     private lateinit var calories: TextView
@@ -72,13 +72,14 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         ingredients = arguments?.getStringArrayList("ingredients")!!
 
         recipeName.text = arguments?.getString("name")
-        calories.text = arguments?.getString("calories")+" kcal"
+        calories.text = arguments?.getString("calories") + " kcal"
         Picasso.get().load(arguments?.getString("image")).into(recetaImage)
-        proteins.text = arguments?.getString("proteins")+" g"
-        carbs.text = arguments?.getString("carbs")+" g"
-        fat.text = arguments?.getString("fat")+" g"
+        proteins.text = arguments?.getString("proteins") + " g"
+        carbs.text = arguments?.getString("carbs") + " g"
+        fat.text = arguments?.getString("fat") + " g"
 
-        arrayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ingredients)
+        arrayAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, ingredients)
         lvingredients.adapter = arrayAdapter
 
         sensorManager = context?.getSystemService(AppCompatActivity.SENSOR_SERVICE) as SensorManager
@@ -100,7 +101,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                 var carbs: Int? = null
                 var fats: Int? = null
 
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     Firebase.firestore.collection("users")
                         .document(Firebase.auth.currentUser?.email.toString()).get()
                         .addOnCompleteListener { document ->
@@ -117,10 +118,10 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                 val carbsString = arguments?.getString("carbs")
                 val fatsString = arguments?.getString("fat")
 
-                progress = calString?.toInt() !!+ calories!!
-                progressProteins = proteinString?.toInt() !!+ proteins!!
-                progressCarbs = carbsString?.toInt() !!+ carbs!!
-                progressFats = fatsString?.toInt() !!+ fats!!
+                progress = calString?.toInt()!! + calories!!
+                progressProteins = proteinString?.toInt()!! + proteins!!
+                progressCarbs = carbsString?.toInt()!! + carbs!!
+                progressFats = fatsString?.toInt()!! + fats!!
 
 
                 Firebase.firestore.collection("users")
@@ -136,7 +137,8 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                 Toast.makeText(context, "Dish added to your day", Toast.LENGTH_SHORT).show()
 
                 Firebase.firestore.collection("users")
-                    .document(Firebase.auth.currentUser?.email.toString()).collection("recipesAdded")
+                    .document(Firebase.auth.currentUser?.email.toString())
+                    .collection("recipesAdded")
                     .document(arguments?.getString("name").toString()).set(
                         hashMapOf(
                             "void" to 0
@@ -160,7 +162,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER){
+        if (event?.sensor?.type == Sensor.TYPE_ACCELEROMETER) {
             val sides = event.values[0]
             val upDown = event.values[1]
 

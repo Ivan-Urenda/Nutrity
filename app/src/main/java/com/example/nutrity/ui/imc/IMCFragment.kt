@@ -147,6 +147,8 @@ class IMCFragment : Fragment() {
 
                     }
 
+
+
                     db.collection("users")
                         .document(Firebase.auth.currentUser?.email.toString()).update(
                             mutableMapOf<String, Any>(
@@ -158,6 +160,12 @@ class IMCFragment : Fragment() {
                             )
                         )
                 }
+                objetivo.setSelection(0)
+                genero.setSelection(0)
+                fActividad.setSelection(0)
+                binding.weight.text.clear()
+                binding.height.text.clear()
+                binding.age.text.clear()
             }
             else{
                 if(binding.weight.text.toString().isEmpty() || binding.height.text.toString().isEmpty() || binding.age.toString().isEmpty()){
@@ -259,6 +267,12 @@ class IMCFragment : Fragment() {
                             )
                         )
                 }
+                objetivo.setSelection(0)
+                genero.setSelection(0)
+                fActividad.setSelection(0)
+                binding.weight.text.clear()
+                binding.height.text.clear()
+                binding.age.text.clear()
             }
 
         }
@@ -266,16 +280,6 @@ class IMCFragment : Fragment() {
         return root
     }
 
-    override fun onResume() {
-        super.onResume()
-        objetivo.setSelection(0)
-        genero.setSelection(0)
-        fActividad.setSelection(0)
-
-        binding.weight.text.clear()
-        binding.height.text.clear()
-        binding.age.text.clear()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.example.nutrity.MainActivity
 import com.example.nutrity.R
+import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.ui.login.LoginActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -35,7 +36,8 @@ class ConfiguracionFragment : Fragment() {
         btn.setOnClickListener {
 
             Firebase.auth.signOut()
-            val intent:Intent = Intent(context, LoginActivity::class.java)
+            prefs.wipe()
+            val intent: Intent = Intent(context, LoginActivity::class.java)
             startActivity(intent)
             activity?.finish()
         }
@@ -49,7 +51,6 @@ class ConfiguracionFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(ConfiguracionViewModel::class.java)
         // TODO: Use the ViewModel
     }
-
 
 
 }

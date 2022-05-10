@@ -50,7 +50,11 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
         val slideshowViewModel =
             ViewModelProvider(this).get(ComidasViewModel::class.java)
 
-        _binding = com.example.nutrity.databinding.ComidasFragmentBinding.inflate(inflater, container, false)
+        _binding = com.example.nutrity.databinding.ComidasFragmentBinding.inflate(
+            inflater,
+            container,
+            false
+        )
         val root: View = binding.root
 
         binding.SearchComidas.setOnQueryTextListener(this)
@@ -76,24 +80,32 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun searchRecipes (query: String) {
+    private fun searchRecipes(query: String) {
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
 
             progressBar.visibility = View.VISIBLE
 
-            var searchRecipesCall: Call<SearchRecipes> = withContext(Dispatchers.IO){
+            var searchRecipesCall: Call<SearchRecipes> = withContext(Dispatchers.IO) {
                 var retrofit: Retrofit = Retrofit.Builder().baseUrl(APICredential().BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create()).build()
                 var apiClient: APIClient = retrofit.create(APIClient::class.java)
-                return@withContext apiClient.getRecipesBySearch(APICredential().TYPE,query, APICredential().APP_ID, APICredential().API_KEY)
+                return@withContext apiClient.getRecipesBySearch(
+                    APICredential().TYPE,
+                    query,
+                    APICredential().APP_ID,
+                    APICredential().API_KEY
+                )
             }
 
 
             delay(1000)
             searchRecipesCall.enqueue(object : Callback<SearchRecipes> {
-                override fun onResponse(call: Call<SearchRecipes>, response: Response<SearchRecipes>) {
-                    if (response.isSuccessful && response.body() != null){
+                override fun onResponse(
+                    call: Call<SearchRecipes>,
+                    response: Response<SearchRecipes>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
                         recipes = response.body()!!.getFoodRecipes()
                     }
                     recyclerView.layoutManager = LinearLayoutManager(context)
@@ -104,7 +116,8 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
                 }
 
                 override fun onFailure(call: Call<SearchRecipes>, t: Throwable) {
-                    Toast.makeText(context, "Ha ocurrido un error"+t.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Ha ocurrido un error" + t.message, Toast.LENGTH_SHORT)
+                        .show()
                 }
 
             })
@@ -121,7 +134,6 @@ class ComidasFragment : Fragment(), android.widget.SearchView.OnQueryTextListene
         super.onDestroyView()
         _binding = null
     }
-
 
 
 }

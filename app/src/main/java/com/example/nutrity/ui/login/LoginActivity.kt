@@ -5,10 +5,15 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.nutrity.ui.email_verification.EmailVerification
 import com.example.nutrity.MainActivity
 import com.example.nutrity.R
+import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.databinding.ActivityLoginBinding
 import com.example.nutrity.ui.forgot_pass.Forgot_pass_Activity
 import com.example.nutrity.ui.signup.SignupActivity
@@ -28,7 +33,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var fireDb: FirebaseFirestore
 
     // Loading Alert Modal
     private val loading = Loading(this)
@@ -44,23 +48,20 @@ class LoginActivity : AppCompatActivity() {
         // Initialize Firebase Auth
         auth = Firebase.auth
 
-        // Initializing Firebase Cloud Firestore Instance
-        fireDb = Firebase.firestore
-
         with(binding) {
             // Redirects to the Sign Up Activity
             createAccountLink.setOnClickListener { redirectToCreateAccount() }
 
             // Text input watcher that clean the helper texts
             emailField.setOnFocusChangeListener { _, hasFocus ->
-                if(hasFocus) {
+                if (hasFocus) {
                     cleanErrors(emailField, emailFieldLayout)
                 }
             }
 
             // Text input watcher that clean the helper texts
-            passwordField.setOnFocusChangeListener{ _, hasFocus ->
-                if(hasFocus) {
+            passwordField.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
                     cleanErrors(passwordField, passwordFieldLayout)
                 }
             }
@@ -73,6 +74,15 @@ class LoginActivity : AppCompatActivity() {
                 val passwordValue = passwordField.text.toString().trim()
                 signIn(emailValue, passwordValue)
             }
+        }
+
+
+        checkUserValues()
+    }
+
+    private fun checkUserValues() {
+        if (prefs.getLogged()) {
+            startActivity(Intent(this, MainActivity::class.java))
         }
     }
 
@@ -93,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
     * */
     private fun redirectToHome(email: String) {
         val intent = Intent(this, MainActivity::class.java).apply {
-            putExtra("email", email)
+            //putExtra("email", email)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(intent)
@@ -111,9 +121,10 @@ class LoginActivity : AppCompatActivity() {
     /*
     * Redirects to the User Profile Configuration Activity
     * */
-    private fun redirectToUserProfile(email: String) {
+    private fun redirectToUserProfile(email: String, state: Boolean) {
         val intent = Intent(this, UserProfileConfig::class.java).apply {
             putExtra("email", email)
+            putExtra("state", state)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(intent)
@@ -121,30 +132,42 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun userHasAProfile(email: String) {
-        val docRef = fireDb.collection("users").document(email)
+        var state = false
 
-        docRef.get()
-            .addOnSuccessListener { result ->
-                val userHasEditedProfile = result.data?.getValue("userProfileEdited") as Boolean
-                if(!userHasEditedProfile) {
-                    redirectToUserProfile(email)
-                } else {
-                    redirectToHome("email")
-                }
+        if (binding.checkBox.isChecked) {
+            state = true
+        }
+        val request = Volley.newRequestQueue(this)
+
+        var url = "https://ivanurenda.000webhostapp.com/ConsultaLogin.php?email=${email}"
+        url=url.replace(" ", "%20")
+        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+            val userHasEditedProfile = response.toInt()
+            if (userHasEditedProfile == 0) {
+                redirectToUserProfile(email, state)
+            } else {
+                prefs.saveLogged(state)
+                redirectToHome("email")
             }
-            .addOnFailureListener { e ->
-                val snack = Snackbar.make(
-                    binding.root,
-                    "Authentication failed. Try again later.",
-                    Snackbar.LENGTH_INDEFINITE
-                ).apply {
-                    setAction("DISMISS", View.OnClickListener {
-                       dismiss()
-                    })
-                }
-                snack.show()
-                Log.w("SnapshotUserProfile", "Error comparing if user has edited its profile.", e)
+
+            Toast.makeText(this, "" + response.toString(), Toast.LENGTH_SHORT).show()
+        }, { e ->
+
+            val snack = Snackbar.make(
+                binding.root,
+                "Authentication failed. Try again later.",
+                Snackbar.LENGTH_INDEFINITE
+            ).apply {
+                setAction("DISMISS", View.OnClickListener {
+                    dismiss()
+                })
             }
+            snack.show()
+            Log.w("SnapshotUserProfile", "Error comparing if user has edited its profile.", e)
+
+        })
+        request.add(stringRequest)
     }
 
     /*
