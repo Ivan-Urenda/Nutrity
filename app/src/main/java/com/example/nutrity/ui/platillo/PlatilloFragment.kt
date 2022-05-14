@@ -1,6 +1,9 @@
 package com.example.nutrity.ui.platillo
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -9,20 +12,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.example.nutrity.MainActivity
 import com.example.nutrity.R
-import com.example.nutrity.ui.calorias.CaloriasFragment
+import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
+import com.example.nutrity.uielements.Loading
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONObject
+import kotlin.concurrent.timer
 
 
 class PlatilloFragment : Fragment(), SensorEventListener {
@@ -44,6 +52,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
     private var progressProteins: Int? = null
     private var progressCarbs: Int? = null
     private var progressFats: Int? = null
+    private lateinit var dialog: AlertDialog
 
     companion object {
         fun newInstance() = PlatilloFragment()
@@ -94,22 +103,33 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         }
 
         addBtn.setOnClickListener {
-
+            loadingDialog()
             GlobalScope.launch(Dispatchers.Main) {
-                var calories: Int? = null
+                var actualProgress: Int? = null
                 var proteins: Int? = null
                 var carbs: Int? = null
                 var fats: Int? = null
 
                 withContext(Dispatchers.IO) {
-                    Firebase.firestore.collection("users")
-                        .document(Firebase.auth.currentUser?.email.toString()).get()
-                        .addOnCompleteListener { document ->
-                            calories = document.result.get("day").toString().toInt()
-                            proteins = document.result.get("proteins").toString().toInt()
-                            carbs = document.result.get("carbs").toString().toInt()
-                            fats = document.result.get("fats").toString().toInt()
-                        }
+
+                    val request = Volley.newRequestQueue(context)
+                    val email = Firebase.auth.currentUser?.email.toString()
+
+                    //Cambiar nombre del archivo Calories.php a Nutrients.php
+                    var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                    url=url.replace(" ", "%20")
+                    var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+                        val jsonArray = JSONArray(response)
+                        val jsonObject = JSONObject(jsonArray.getString(0))
+                        actualProgress = jsonObject.get("progress").toString().toInt()
+                        proteins = jsonObject.get("proteins").toString().toInt()
+                        carbs = jsonObject.get("carbs").toString().toInt()
+                        fats = jsonObject.get("fats").toString().toInt()
+                    }, { error ->
+
+                    })
+                    request.add(stringRequest)
                 }
 
                 delay(1000)
@@ -118,36 +138,92 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                 val carbsString = arguments?.getString("carbs")
                 val fatsString = arguments?.getString("fat")
 
-                progress = calString?.toInt()!! + calories!!
+                progress = calString?.toInt()!! + actualProgress!!
                 progressProteins = proteinString?.toInt()!! + proteins!!
                 progressCarbs = carbsString?.toInt()!! + carbs!!
                 progressFats = fatsString?.toInt()!! + fats!!
 
-
-                Firebase.firestore.collection("users")
-                    .document(Firebase.auth.currentUser?.email.toString()).update(
-                        mutableMapOf<String, Any>(
-                            "day" to progress.toString(),
-                            "proteins" to progressProteins.toString(),
-                            "carbs" to progressCarbs.toString(),
-                            "fats" to progressFats.toString()
-                        )
-                    )
-
-                Toast.makeText(context, "Dish added to your day", Toast.LENGTH_SHORT).show()
-
-                Firebase.firestore.collection("users")
-                    .document(Firebase.auth.currentUser?.email.toString())
-                    .collection("recipesAdded")
-                    .document(arguments?.getString("name").toString()).set(
-                        hashMapOf(
-                            "void" to 0
-                        )
-                    )
+                UpdateNutrients()
+                AddRecipe()
+                isDismiss()
+                acceptDialog()
             }
         }
 
         return root
+    }
+
+    fun UpdateNutrients(){
+
+        prefs.saveProgress(progress!!)
+        prefs.saveProteins(progressProteins!!)
+        prefs.saveCarbs(progressCarbs!!)
+        prefs.saveFats(progressFats!!)
+
+        try {
+            val request = Volley.newRequestQueue(context)
+            val email = Firebase.auth.currentUser?.email.toString()
+
+            var url = "https://ivanurenda.000webhostapp.com/UpdateNutrients.php?email=${email}&progress=${progress}"+
+                    "&proteins=${progressProteins}&carbs=${progressCarbs}&fats=${progressFats}"
+
+            url=url.replace(" ", "%20")
+            var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+            }, { error ->
+
+                Toast.makeText(context, ""+error.toString(), Toast.LENGTH_SHORT).show()
+            })
+            request.add(stringRequest)
+        }catch (e: Exception){
+
+        }
+    }
+
+    fun AddRecipe(){
+
+        try {
+            val request = Volley.newRequestQueue(context)
+            val email = Firebase.auth.currentUser?.email.toString()
+
+            var url = "https://ivanurenda.000webhostapp.com/AddRecipes.php?email=${email}&recipeName=${arguments?.getString("name").toString()}"
+
+            url=url.replace(" ", "%20")
+            var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+            }, { error ->
+
+                Toast.makeText(context, ""+error.toString(), Toast.LENGTH_SHORT).show()
+            })
+            request.add(stringRequest)
+        }catch (e: Exception){
+
+        }
+
+    }
+
+    private fun acceptDialog(){
+        try {
+            AlertDialog.Builder(context).apply {
+                setTitle("Nutrity")
+                setMessage("Your recipe was added succesfully.")
+                setPositiveButton("Acept") { _: DialogInterface, _: Int ->
+                }
+            }.show()
+        }catch (e: Exception){
+
+        }
+    }
+
+    private fun loadingDialog() {
+
+        dialog = AlertDialog.Builder(context).apply {
+            setView(R.layout.loading_item)
+        }.show()
+    }
+
+    fun isDismiss() {
+        dialog.dismiss()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -1,5 +1,6 @@
 package com.example.nutrity.ui.configuracion
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -11,13 +12,15 @@ import android.widget.Button
 import com.example.nutrity.MainActivity
 import com.example.nutrity.R
 import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
+import com.example.nutrity.databinding.ConfiguracionFragmentBinding
 import com.example.nutrity.ui.login.LoginActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class ConfiguracionFragment : Fragment() {
 
-    private lateinit var btn: Button
+    private var _binding: ConfiguracionFragmentBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         fun newInstance() = ConfiguracionFragment()
@@ -25,15 +28,24 @@ class ConfiguracionFragment : Fragment() {
 
     private lateinit var viewModel: ConfiguracionViewModel
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        val root = inflater.inflate(R.layout.configuracion_fragment, container, false)
+        _binding = ConfiguracionFragmentBinding.inflate(inflater, container, false)
 
-        btn = root.findViewById(R.id.Logout)
-        btn.setOnClickListener {
+        val root = binding.root
+
+        binding.tvUsername.text = prefs.getUsername()
+        binding.email.text = Firebase.auth.currentUser?.email
+        binding.firstName.text = prefs.getFirstName()
+        binding.lastName.text = prefs.getLastName()
+        binding.tvUsername2.text = prefs.getUsername()
+        binding.caloriesGoal.text = prefs.getCalories().toString()+" kcal"
+
+        binding.Logout.setOnClickListener {
 
             Firebase.auth.signOut()
             prefs.wipe()

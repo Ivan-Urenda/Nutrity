@@ -27,6 +27,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
 
@@ -76,13 +79,13 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-
         checkUserValues()
     }
 
     private fun checkUserValues() {
         if (prefs.getLogged()) {
             startActivity(Intent(this, MainActivity::class.java))
+            this.finish()
         }
     }
 
@@ -103,7 +106,7 @@ class LoginActivity : AppCompatActivity() {
     * */
     private fun redirectToHome(email: String) {
         val intent = Intent(this, MainActivity::class.java).apply {
-            //putExtra("email", email)
+            putExtra("email", email)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(intent)
@@ -132,42 +135,68 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun userHasAProfile(email: String) {
-        var state = false
+        GlobalScope.launch(Dispatchers.Main) {
 
-        if (binding.checkBox.isChecked) {
-            state = true
-        }
-        val request = Volley.newRequestQueue(this)
+            val userHasEditedProfile = prefs.getConfig()
 
-        var url = "https://ivanurenda.000webhostapp.com/ConsultaLogin.php?email=${email}"
-        url=url.replace(" ", "%20")
-        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            var calories: Int? = null
+            var progress: Int? = null
+            var proteins: Int? = null
+            var carbs: Int? = null
+            var fats: Int? = null
+            var username: String? = null
+            var firstName: String? = null
+            var lastName: String? = null
 
-            val userHasEditedProfile = response.toInt()
-            if (userHasEditedProfile == 0) {
+            var state = false
+
+            if (binding.checkBox.isChecked) {
+                state = true
+            }
+
+            withContext(Dispatchers.IO){
+
+                if (userHasEditedProfile){
+                    prefs.saveLogged(state)
+                    val request = Volley.newRequestQueue(applicationContext)
+                    var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                    url=url.replace(" ", "%20")
+                    val stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+                        val jsonArray = JSONArray(response)
+                        val jsonObject = JSONObject(jsonArray.getString(0))
+                        progress = jsonObject.get("progress").toString().toInt()
+                        calories = jsonObject.get("calories").toString().toInt()
+                        proteins = jsonObject.get("proteins").toString().toInt()
+                        carbs = jsonObject.get("carbs").toString().toInt()
+                        fats = jsonObject.get("fats").toString().toInt()
+                        username = jsonObject.get("username").toString()
+                        firstName = jsonObject.get("firstName").toString()
+                        lastName = jsonObject.get("lastName").toString()
+                    }, { error ->
+
+                    })
+                    request.add(stringRequest)
+                }
+
+            }
+            delay(1000)
+            if (!userHasEditedProfile) {
+                loading.isDismiss()
                 redirectToUserProfile(email, state)
-            } else {
-                prefs.saveLogged(state)
-                redirectToHome("email")
+            }else{
+                loading.isDismiss()
+                prefs.saveCalories(calories!!)
+                prefs.saveProgress(progress!!)
+                prefs.saveProteins(proteins!!)
+                prefs.saveCarbs(carbs!!)
+                prefs.saveFats(fats!!)
+                prefs.saveUsername(username!!)
+                prefs.saveFirstName(firstName!!)
+                prefs.saveLastName(lastName!!)
+                redirectToHome(email)
             }
-
-            Toast.makeText(this, "" + response.toString(), Toast.LENGTH_SHORT).show()
-        }, { e ->
-
-            val snack = Snackbar.make(
-                binding.root,
-                "Authentication failed. Try again later.",
-                Snackbar.LENGTH_INDEFINITE
-            ).apply {
-                setAction("DISMISS", View.OnClickListener {
-                    dismiss()
-                })
-            }
-            snack.show()
-            Log.w("SnapshotUserProfile", "Error comparing if user has edited its profile.", e)
-
-        })
-        request.add(stringRequest)
+        }
     }
 
     /*
@@ -190,7 +219,6 @@ class LoginActivity : AppCompatActivity() {
             if (task.isSuccessful) {
                 when (auth.currentUser?.isEmailVerified) {
                     true -> {
-                        loading.isDismiss()
                         userHasAProfile(email)
                     }
                     else -> {

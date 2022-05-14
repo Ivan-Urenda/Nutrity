@@ -135,7 +135,6 @@ class SignupActivity : AppCompatActivity() {
         url=url.replace(" ", "%20")
         var stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-            Toast.makeText(this, "Registro guardado", Toast.LENGTH_SHORT).show()
         }, { error ->
 
         })

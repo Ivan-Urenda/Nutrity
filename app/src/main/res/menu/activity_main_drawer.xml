@@ -7,11 +7,11 @@
         <item
             android:id="@+id/nav_imc"
             android:icon="@drawable/home"
-            android:title="IMC"/>
+            android:title="BIM"/>
         <item
             android:id="@+id/nav_calorias"
             android:icon="@drawable/calorias"
-            android:title="@string/menu_calorias" />
+            android:title="Calories" />
         <item
             android:id="@+id/nav_recetas"
             android:icon="@drawable/recetas"
@@ -23,7 +23,7 @@
             <item
                 android:id="@+id/nav_configuracion"
                 android:icon="@drawable/config"
-                android:title="@string/menu_configuracion" />
+                android:title="Settings" />
         </menu>
 
     </item>

@@ -1,6 +1,7 @@
 package com.example.nutrity.ui.user_profile
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -32,13 +33,14 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 class UserProfileConfig : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserProfileConfigBinding
-    private lateinit var uriImage: Uri
-    private lateinit var fireDb: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
+    private var uriImage: Uri? = null
     private lateinit var imageViewSelected: ImageView
 
     // Variable that tracks if a the user profile image was replaced
@@ -71,12 +73,6 @@ class UserProfileConfig : AppCompatActivity() {
         val view = binding.root
 
         setContentView(view)
-
-        // Access a Cloud Firestore instance from your Activity
-        fireDb = Firebase.firestore
-
-        // Access to the Cloud Storage instance from the Activity
-        storage = Firebase.storage
 
         with(binding) {
 
@@ -142,52 +138,65 @@ class UserProfileConfig : AppCompatActivity() {
     ) {
         if(!validateForm(username, firstname, lastname)) return
 
-        val state = intent.extras!!.getBoolean("state")
-        val email = intent.extras!!.getString("email")
-        prefs.saveLogged(state)
+        GlobalScope.launch(Dispatchers.Main){
 
-        val request = Volley.newRequestQueue(this)
+            loading.startDialog()
+            val state = intent.extras!!.getBoolean("state")
+            val email = intent.extras!!.getString("email")
 
-        var url = "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
-                "&lastName=${lastname}" + "&username=${username}&profileEdited=${1}"
+            var calories: Int? = null
+            var progress: Int? = null
+            var proteins: Int? = null
+            var carbs: Int? = null
+            var fats: Int? = null
 
-        url=url.replace(" ", "%20")
-        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            withContext(Dispatchers.IO){
+                val request = Volley.newRequestQueue(applicationContext)
 
-            Toast.makeText(this, ""+response.toString(), Toast.LENGTH_SHORT).show()
-            redirectToHome()
-        }, { error ->
+                var url = "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
+                        "&lastName=${lastname}" + "&username=${username}&profileEdited=${1}"
 
-            Toast.makeText(this, ""+error.toString(), Toast.LENGTH_SHORT).show()
-        })
-        request.add(stringRequest)
+                url=url.replace(" ", "%20")
+                var stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-    }
+                }, { error ->
 
-    private fun uploadImage() {
+                    Toast.makeText(applicationContext, ""+error.toString(), Toast.LENGTH_SHORT).show()
+                })
+                request.add(stringRequest)
 
-        val user = Firebase.auth.currentUser
 
-        user?.let {
-            val email = it.email
+                url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                url=url.replace(" ", "%20")
+                stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-            val storageRef = storage.reference
+                    val jsonArray = JSONArray(response)
+                    val jsonObject = JSONObject(jsonArray.getString(0))
+                    progress = jsonObject.get("progress").toString().toInt()
+                    calories = jsonObject.get("calories").toString().toInt()
+                    proteins = jsonObject.get("proteins").toString().toInt()
+                    carbs = jsonObject.get("carbs").toString().toInt()
+                    fats = jsonObject.get("fats").toString().toInt()
+                }, { error ->
 
-            // Create a child reference
-            // imagesRef now points to "images/userEmail"
-            val imagesRef: StorageReference = storageRef.child("images/${email}/profile_pic.png")
-            try {
-                imagesRef.putFile(uriImage)
-                    .addOnCompleteListener { taskSnapshot ->
-                        Log.d(TAGImg, "Image uploaded successfully. ${taskSnapshot.result}")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w(TAGImg, "Something went wrong uploading the image.", e)
-                        throw e
-                    }
-            } catch (exception: Exception) {
-                throw exception
+                })
+                request.add(stringRequest)
             }
+            delay(1000)
+            loading.isDismiss()
+            prefs.saveCalories(calories!!)
+            prefs.saveProgress(progress!!)
+            prefs.saveProteins(proteins!!)
+            prefs.saveCarbs(carbs!!)
+            prefs.saveFats(fats!!)
+            prefs.saveUsername(username)
+            prefs.saveLogged(state)
+            prefs.saveFirstName(firstname)
+            prefs.saveLastName(lastname)
+            prefs.saveConfig(true)
+            if (uriImage!=null){prefs.saveUri(uriImage.toString())}
+            redirectToHome()
+
         }
 
     }

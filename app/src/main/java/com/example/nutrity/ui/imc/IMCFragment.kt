@@ -1,15 +1,20 @@
 package com.example.nutrity.ui.imc
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.example.nutrity.MainActivity
 import com.example.nutrity.R
+import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.databinding.IMCFragmentBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -148,17 +153,19 @@ class IMCFragment : Fragment() {
                     }
 
 
+                    val request = Volley.newRequestQueue(context)
+                    val email = Firebase.auth.currentUser?.email.toString()
+                    prefs.saveCalories(cal)
 
-                    db.collection("users")
-                        .document(Firebase.auth.currentUser?.email.toString()).update(
-                            mutableMapOf<String, Any>(
-                                "calories" to cal,
-                                "day" to 0,
-                                "proteins" to 0,
-                                "carbs" to 0,
-                                "fats" to 0
-                            )
-                        )
+                    var url = "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}"
+
+                    url=url.replace(" ", "%20")
+                    var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+                    }, { error ->
+
+                    })
+                    request.add(stringRequest)
                 }
                 objetivo.setSelection(0)
                 genero.setSelection(0)
@@ -256,16 +263,19 @@ class IMCFragment : Fragment() {
 
                     }
 
-                    db.collection("users")
-                        .document(Firebase.auth.currentUser?.email.toString()).update(
-                            mutableMapOf<String, Any>(
-                                "calories" to cal,
-                                "day" to 0,
-                                "proteins" to 0,
-                                "carbs" to 0,
-                                "fats" to 0
-                            )
-                        )
+                    val request = Volley.newRequestQueue(context)
+                    val email = Firebase.auth.currentUser?.email.toString()
+                    prefs.saveCalories(cal)
+
+                    var url = "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}"
+
+                    url=url.replace(" ", "%20")
+                    var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+                    }, { error ->
+
+                    })
+                    request.add(stringRequest)
                 }
                 objetivo.setSelection(0)
                 genero.setSelection(0)
@@ -274,7 +284,7 @@ class IMCFragment : Fragment() {
                 binding.height.text.clear()
                 binding.age.text.clear()
             }
-
+            (activity as MainActivity?)?.setCaloriesGoal()
         }
 
         return root
