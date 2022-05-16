@@ -20,6 +20,10 @@ class Prefs(val context: Context) {
     private val SHARED_URI = "uri"
     private val SHARED_FIRST = "first"
     private val SHARED_LAST = "last"
+    private val SHARED_WEIGHT = "weight"
+    private val SHARED_HEIGHT = "height"
+    private val SHARED_AGE = "age"
+    private val SHARED_OBJECTIVE = "objective"
 
     val storage: SharedPreferences = context.getSharedPreferences(SHARED_NUTRIENTS, 0)
     val check: SharedPreferences = context.getSharedPreferences(SHARRED_CHECK, 0)
@@ -111,6 +115,38 @@ class Prefs(val context: Context) {
 
     fun getLastName(): String {
         return config.getString(SHARED_LAST, "")!!
+    }
+
+    fun saveWeight(weight: Int) {
+        storage.edit().putInt(SHARED_WEIGHT, weight).apply()
+    }
+
+    fun getWeight(): Int {
+        return storage.getInt(SHARED_WEIGHT, 0)
+    }
+
+    fun saveHeight(height: Int) {
+        storage.edit().putInt(SHARED_HEIGHT, height).apply()
+    }
+
+    fun getHeight(): Int {
+        return storage.getInt(SHARED_HEIGHT, 0)
+    }
+
+    fun saveAge(age: Int) {
+        storage.edit().putInt(SHARED_AGE, age).apply()
+    }
+
+    fun getAge(): Int {
+        return storage.getInt(SHARED_AGE, 0)
+    }
+
+    fun saveObjective(objective: String) {
+        config.edit().putString(SHARED_OBJECTIVE, objective).apply()
+    }
+
+    fun getObjective(): String {
+        return config.getString(SHARED_OBJECTIVE, "")!!
     }
 
 

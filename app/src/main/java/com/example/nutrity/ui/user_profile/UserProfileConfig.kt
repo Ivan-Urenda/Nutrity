@@ -144,17 +144,11 @@ class UserProfileConfig : AppCompatActivity() {
             val state = intent.extras!!.getBoolean("state")
             val email = intent.extras!!.getString("email")
 
-            var calories: Int? = null
-            var progress: Int? = null
-            var proteins: Int? = null
-            var carbs: Int? = null
-            var fats: Int? = null
-
             withContext(Dispatchers.IO){
                 val request = Volley.newRequestQueue(applicationContext)
 
                 var url = "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
-                        "&lastName=${lastname}" + "&username=${username}&profileEdited=${1}"
+                        "&lastName=${lastname}" + "&username=${username}"
 
                 url=url.replace(" ", "%20")
                 var stringRequest = StringRequest(Request.Method.GET, url, { response ->
@@ -165,6 +159,7 @@ class UserProfileConfig : AppCompatActivity() {
                 })
                 request.add(stringRequest)
 
+                delay(1000)
 
                 url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
                 url=url.replace(" ", "%20")
@@ -172,33 +167,41 @@ class UserProfileConfig : AppCompatActivity() {
 
                     val jsonArray = JSONArray(response)
                     val jsonObject = JSONObject(jsonArray.getString(0))
-                    progress = jsonObject.get("progress").toString().toInt()
-                    calories = jsonObject.get("calories").toString().toInt()
-                    proteins = jsonObject.get("proteins").toString().toInt()
-                    carbs = jsonObject.get("carbs").toString().toInt()
-                    fats = jsonObject.get("fats").toString().toInt()
+                    setValuesPrefs(jsonObject, state, username, firstname, lastname)
                 }, { error ->
 
                 })
                 request.add(stringRequest)
             }
-            delay(1000)
-            loading.isDismiss()
-            prefs.saveCalories(calories!!)
-            prefs.saveProgress(progress!!)
-            prefs.saveProteins(proteins!!)
-            prefs.saveCarbs(carbs!!)
-            prefs.saveFats(fats!!)
-            prefs.saveUsername(username)
-            prefs.saveLogged(state)
-            prefs.saveFirstName(firstname)
-            prefs.saveLastName(lastname)
-            prefs.saveConfig(true)
-            if (uriImage!=null){prefs.saveUri(uriImage.toString())}
-            redirectToHome()
 
         }
 
+    }
+
+    private fun setValuesPrefs(
+        jsonObject: JSONObject,
+        state: Boolean,
+        username: String,
+        firstname: String,
+        lastname: String
+    ){
+        prefs.saveCalories(jsonObject.get("calories").toString().toInt())
+        prefs.saveProgress(jsonObject.get("progress").toString().toInt())
+        prefs.saveProteins(jsonObject.get("proteins").toString().toInt())
+        prefs.saveCarbs(jsonObject.get("carbs").toString().toInt())
+        prefs.saveFats(jsonObject.get("fats").toString().toInt())
+        prefs.saveWeight(jsonObject.get("weight").toString().toInt())
+        prefs.saveHeight(jsonObject.get("height").toString().toInt())
+        prefs.saveAge(jsonObject.get("age").toString().toInt())
+        prefs.saveObjective(jsonObject.get("objective").toString())
+        prefs.saveUsername(username)
+        prefs.saveLogged(state)
+        prefs.saveFirstName(firstname)
+        prefs.saveLastName(lastname)
+        prefs.saveConfig(true)
+        if (uriImage!=null){prefs.saveUri(uriImage.toString())}
+        loading.isDismiss()
+        redirectToHome()
     }
 
     private val requestPermissionLauncher = registerForActivityResult(

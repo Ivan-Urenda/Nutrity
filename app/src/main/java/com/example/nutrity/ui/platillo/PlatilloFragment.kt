@@ -118,42 +118,39 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                     //Cambiar nombre del archivo Calories.php a Nutrients.php
                     var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
                     url=url.replace(" ", "%20")
-                    var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+                    val stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
                         val jsonArray = JSONArray(response)
                         val jsonObject = JSONObject(jsonArray.getString(0))
-                        actualProgress = jsonObject.get("progress").toString().toInt()
-                        proteins = jsonObject.get("proteins").toString().toInt()
-                        carbs = jsonObject.get("carbs").toString().toInt()
-                        fats = jsonObject.get("fats").toString().toInt()
+                        calculateNutrients(jsonObject)
+                        updateNutrients()
+                        AddRecipe()
+                        isDismiss()
+                        acceptDialog()
                     }, { error ->
 
                     })
                     request.add(stringRequest)
                 }
-
-                delay(1000)
-                val calString = arguments?.getString("calories")
-                val proteinString = arguments?.getString("proteins")
-                val carbsString = arguments?.getString("carbs")
-                val fatsString = arguments?.getString("fat")
-
-                progress = calString?.toInt()!! + actualProgress!!
-                progressProteins = proteinString?.toInt()!! + proteins!!
-                progressCarbs = carbsString?.toInt()!! + carbs!!
-                progressFats = fatsString?.toInt()!! + fats!!
-
-                UpdateNutrients()
-                AddRecipe()
-                isDismiss()
-                acceptDialog()
             }
         }
 
         return root
     }
 
-    fun UpdateNutrients(){
+    private fun calculateNutrients(jsonObject: JSONObject){
+        val calString = arguments?.getString("calories")
+        val proteinString = arguments?.getString("proteins")
+        val carbsString = arguments?.getString("carbs")
+        val fatsString = arguments?.getString("fat")
+
+        progress = calString?.toInt()!! + jsonObject.get("progress").toString().toInt()
+        progressProteins = proteinString?.toInt()!! + jsonObject.get("proteins").toString().toInt()
+        progressCarbs = carbsString?.toInt()!! + jsonObject.get("carbs").toString().toInt()
+        progressFats = fatsString?.toInt()!! + jsonObject.get("fats").toString().toInt()
+    }
+
+    private fun updateNutrients(){
 
         prefs.saveProgress(progress!!)
         prefs.saveProteins(progressProteins!!)
@@ -168,19 +165,19 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                     "&proteins=${progressProteins}&carbs=${progressCarbs}&fats=${progressFats}"
 
             url=url.replace(" ", "%20")
-            var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            val stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
             }, { error ->
 
-                Toast.makeText(context, ""+error.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error!! Nutrients could not be updated", Toast.LENGTH_SHORT).show()
             })
             request.add(stringRequest)
         }catch (e: Exception){
-
+            Toast.makeText(context, "Error!! Nutrients could not be updated", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun AddRecipe(){
+    private fun AddRecipe(){
 
         try {
             val request = Volley.newRequestQueue(context)
@@ -189,15 +186,15 @@ class PlatilloFragment : Fragment(), SensorEventListener {
             var url = "https://ivanurenda.000webhostapp.com/AddRecipes.php?email=${email}&recipeName=${arguments?.getString("name").toString()}"
 
             url=url.replace(" ", "%20")
-            var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            val stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
             }, { error ->
 
-                Toast.makeText(context, ""+error.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error!! Failed to add recipe", Toast.LENGTH_SHORT).show()
             })
             request.add(stringRequest)
         }catch (e: Exception){
-
+            Toast.makeText(context, "Error!! Failed to add recipe", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -222,7 +219,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         }.show()
     }
 
-    fun isDismiss() {
+    private fun isDismiss() {
         dialog.dismiss()
     }
 

@@ -139,15 +139,6 @@ class LoginActivity : AppCompatActivity() {
 
             val userHasEditedProfile = prefs.getConfig()
 
-            var calories: Int? = null
-            var progress: Int? = null
-            var proteins: Int? = null
-            var carbs: Int? = null
-            var fats: Int? = null
-            var username: String? = null
-            var firstName: String? = null
-            var lastName: String? = null
-
             var state = false
 
             if (binding.checkBox.isChecked) {
@@ -165,38 +156,38 @@ class LoginActivity : AppCompatActivity() {
 
                         val jsonArray = JSONArray(response)
                         val jsonObject = JSONObject(jsonArray.getString(0))
-                        progress = jsonObject.get("progress").toString().toInt()
-                        calories = jsonObject.get("calories").toString().toInt()
-                        proteins = jsonObject.get("proteins").toString().toInt()
-                        carbs = jsonObject.get("carbs").toString().toInt()
-                        fats = jsonObject.get("fats").toString().toInt()
-                        username = jsonObject.get("username").toString()
-                        firstName = jsonObject.get("firstName").toString()
-                        lastName = jsonObject.get("lastName").toString()
+                        setValuesPrefs(jsonObject, email, state)
                     }, { error ->
 
                     })
                     request.add(stringRequest)
                 }
+                else{
+                    loading.isDismiss()
+                    redirectToUserProfile(email, state)
+                }
 
             }
-            delay(1000)
-            if (!userHasEditedProfile) {
-                loading.isDismiss()
-                redirectToUserProfile(email, state)
-            }else{
-                loading.isDismiss()
-                prefs.saveCalories(calories!!)
-                prefs.saveProgress(progress!!)
-                prefs.saveProteins(proteins!!)
-                prefs.saveCarbs(carbs!!)
-                prefs.saveFats(fats!!)
-                prefs.saveUsername(username!!)
-                prefs.saveFirstName(firstName!!)
-                prefs.saveLastName(lastName!!)
-                redirectToHome(email)
-            }
         }
+    }
+
+    private fun setValuesPrefs(jsonObject: JSONObject, email: String, state: Boolean)
+    {
+        prefs.saveCalories(jsonObject.get("calories").toString().toInt())
+        prefs.saveProgress(jsonObject.get("progress").toString().toInt())
+        prefs.saveProteins(jsonObject.get("proteins").toString().toInt())
+        prefs.saveCarbs(jsonObject.get("carbs").toString().toInt())
+        prefs.saveFats(jsonObject.get("fats").toString().toInt())
+        prefs.saveUsername(jsonObject.get("username").toString())
+        prefs.saveFirstName(jsonObject.get("firstName").toString())
+        prefs.saveLastName(jsonObject.get("lastName").toString())
+        prefs.saveWeight(jsonObject.get("weight").toString().toInt())
+        prefs.saveHeight(jsonObject.get("height").toString().toInt())
+        prefs.saveAge(jsonObject.get("age").toString().toInt())
+        prefs.saveObjective(jsonObject.get("objective").toString())
+        loading.isDismiss()
+        redirectToHome(email)
+
     }
 
     /*

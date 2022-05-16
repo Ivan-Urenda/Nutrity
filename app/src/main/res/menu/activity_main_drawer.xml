@@ -6,8 +6,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_imc"
-            android:icon="@drawable/home"
-            android:title="BIM"/>
+            android:icon="@drawable/calculator"
+            android:title="Calories calculator"/>
         <item
             android:id="@+id/nav_calorias"
             android:icon="@drawable/calorias"
@@ -16,15 +16,10 @@
             android:id="@+id/nav_recetas"
             android:icon="@drawable/recetas"
             android:title="@string/menu_recetas" />
+        <item
+            android:id="@+id/nav_configuracion"
+            android:icon="@drawable/config"
+            android:title="Settings" />
     </group>
 
-    <item android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_configuracion"
-                android:icon="@drawable/config"
-                android:title="Settings" />
-        </menu>
-
-    </item>
 </menu>

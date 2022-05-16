@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.core.net.toUri
 import com.example.nutrity.MainActivity
 import com.example.nutrity.R
 import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
@@ -44,6 +45,15 @@ class ConfiguracionFragment : Fragment() {
         binding.lastName.text = prefs.getLastName()
         binding.tvUsername2.text = prefs.getUsername()
         binding.caloriesGoal.text = prefs.getCalories().toString()+" kcal"
+        binding.Name.text = prefs.getFirstName()+" "+ prefs.getLastName()
+        binding.weight.text = prefs.getWeight().toString()+" kg"
+        binding.height.text = prefs.getHeight().toString()+" cm"
+        binding.age.text = prefs.getAge().toString()+" years"
+        binding.objetive.text = prefs.getObjective()
+        val uri = prefs.getUri()
+        if(uri != ""){
+            binding.userImage.setImageURI(uri.toUri())
+        }
 
         binding.Logout.setOnClickListener {
 

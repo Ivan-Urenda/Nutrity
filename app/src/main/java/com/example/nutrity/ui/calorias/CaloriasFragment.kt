@@ -8,6 +8,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -65,7 +66,7 @@ class CaloriasFragment : Fragment() {
         progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#38B745"))
 
         if (prefs.getCalories() == 0) {
-            alertBIM()
+            alert("You should calculate your BMI first before looking at your progress for the day.")
         } else {
             loadData()
         }
@@ -105,16 +106,11 @@ class CaloriasFragment : Fragment() {
                         val jsonObject = JSONObject(jsonArray.getString(i))
                         recipes.add(jsonObject.get("recipeName").toString())
                     }
+                    setRecipes()
                 }, { error ->
 
                 })
                 request.add(stringRequest)
-            }
-            delay(1000)
-            try {
-                setRecipes()
-            } catch (e: Exception) {
-
             }
         }
     }
@@ -161,11 +157,11 @@ class CaloriasFragment : Fragment() {
     }
 
     //Alerts you that you don't have a calories goal
-    private fun alertBIM() {
+    private fun alert(message: String) {
 
         AlertDialog.Builder(context).apply {
-            setTitle("Alert")
-            setMessage("You should calculate your BMI first before looking at your progress for the day.")
+            setTitle("Nutrity")
+            setMessage(message)
             setPositiveButton("Acept") { _: DialogInterface, _: Int ->
             }
         }.show()
@@ -194,10 +190,6 @@ class CaloriasFragment : Fragment() {
         prefs.saveFats(0)
 
         GlobalScope.launch(Dispatchers.Main) {
-            var actualProgress: Int? = null
-            var proteins: Int? = null
-            var carbs: Int? = null
-            var fats: Int? = null
 
             withContext(Dispatchers.IO) {
 
@@ -211,10 +203,9 @@ class CaloriasFragment : Fragment() {
                 url = url.replace(" ", "%20")
                 var stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-                    Toast.makeText(context, "" + response.toString(), Toast.LENGTH_SHORT).show()
                 }, { error ->
 
-                    Toast.makeText(context, "" + error.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "An error has occurred, please try again later", Toast.LENGTH_SHORT).show()
                 })
                 request.add(stringRequest)
 
@@ -224,10 +215,10 @@ class CaloriasFragment : Fragment() {
                 url = url.replace(" ", "%20")
                 stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-                    Toast.makeText(context, "" + response.toString(), Toast.LENGTH_SHORT).show()
+                    alert("Have a nice day :)")
                 }, { error ->
 
-                    Toast.makeText(context, "" + error.toString(), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "An error has occurred, please try again later", Toast.LENGTH_SHORT).show()
                 })
                 request.add(stringRequest)
 

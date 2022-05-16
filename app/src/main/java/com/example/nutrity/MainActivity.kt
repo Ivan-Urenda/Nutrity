@@ -1,5 +1,6 @@
 package com.example.nutrity
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -82,14 +83,25 @@ class MainActivity : AppCompatActivity() {
             ivUser.setImageURI(uri.toUri())
         }
 
-
-
     }
 
+    @SuppressLint("SetTextI18n")
     fun setCaloriesGoal(){
         val navView: NavigationView = binding.navView
         caloriesGoal = navView.getHeaderView(0).findViewById(R.id.caloriesGoal)
-        caloriesGoal.text = prefs.getCalories().toString()
+        when(prefs.getObjective()){
+            "Lose weight" -> {
+                caloriesGoal.text = "< "+prefs.getCalories().toString()+" kcal"
+            }
+
+            "Gain weight" -> {
+                caloriesGoal.text = "> "+prefs.getCalories().toString()+" kcal"
+            }
+
+            "Maintain weight" -> {
+                caloriesGoal.text = "= "+prefs.getCalories().toString()+" kcal"
+            }
+        }
     }
 
 
