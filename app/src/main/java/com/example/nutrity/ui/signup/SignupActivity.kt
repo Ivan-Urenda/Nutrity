@@ -4,9 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.MenuItem
-import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -22,8 +20,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class SignupActivity : AppCompatActivity() {
@@ -34,7 +30,6 @@ class SignupActivity : AppCompatActivity() {
     // Loading Dialog Alert
     private val loading = Loading(this)
 
-    private lateinit var fireDb: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +41,6 @@ class SignupActivity : AppCompatActivity() {
 
         // Initializing Firebase Auth Instance
         auth = Firebase.auth
-
-        // Initializing Firebase Firestore instance
-        fireDb = Firebase.firestore
 
         with(binding) {
             btnCreateAccount.setOnClickListener {
@@ -130,14 +122,8 @@ class SignupActivity : AppCompatActivity() {
 
     private fun uploadUser(email: String) {
         val request = Volley.newRequestQueue(this)
-
-        var url = "https://ivanurenda.000webhostapp.com/Registro.php?email=${email}"
-        url=url.replace(" ", "%20")
-        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
-
-        }, { error ->
-
-        })
+        val url = "https://ivanurenda.000webhostapp.com/Registro.php?email=${email}"
+        val stringRequest = StringRequest(Request.Method.GET, url, { _ ->}, { _ ->})
         request.add(stringRequest)
     }
 

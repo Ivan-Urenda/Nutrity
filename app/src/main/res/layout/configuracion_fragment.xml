@@ -23,7 +23,7 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="15dp"
-                android:src="@drawable/circle_user_solid" />
+                android:src="@mipmap/ic_launcher" />
 
             <GridLayout
                 android:layout_width="match_parent"
@@ -84,67 +84,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="ivanurenda@hotmail.com"
-                android:textColor="@color/gray"
-                android:textSize="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:layout_gravity="end"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Firstname"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:layout_gravity="start"/>
-            <TextView
-                android:id="@+id/firstName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Ivan"
-                android:textColor="@color/gray"
-                android:textSize="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:layout_gravity="end"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Lastname"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:layout_gravity="start"/>
-            <TextView
-                android:id="@+id/lastName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Urenda"
-                android:textColor="@color/gray"
-                android:textSize="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:layout_gravity="end"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Username"
-                android:textColor="@color/black"
-                android:textSize="16dp"
-                android:fontFamily="sans-serif-medium"
-                android:layout_gravity="start"/>
-            <TextView
-                android:id="@+id/tvUsername2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Smiledpandora"
                 android:textColor="@color/gray"
                 android:textSize="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -164,7 +103,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="3000 kcal"
                 android:textColor="@color/gray"
                 android:textSize="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -184,7 +122,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="100 kg"
                 android:textColor="@color/gray"
                 android:textSize="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -204,7 +141,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="175 cm"
                 android:textColor="@color/gray"
                 android:textSize="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -224,7 +160,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="0 years"
                 android:textColor="@color/gray"
                 android:textSize="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -244,7 +179,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="somthing else"
                 android:textColor="@color/gray"
                 android:textSize="16dp"
                 android:fontFamily="sans-serif-medium"
@@ -253,10 +187,21 @@
         </GridLayout>
 
         <Button
+            android:id="@+id/EditProfile"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="#1e96fc"
+            android:fontFamily="sans-serif-medium"
+            android:text="Edit profile"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"/>
+
+        <Button
             android:id="@+id/Logout"
             android:layout_width="206dp"
             android:layout_height="50dp"
-            android:layout_marginTop="50dp"
             android:layout_marginBottom="20dp"
             android:backgroundTint="#F83C3C"
             android:fontFamily="sans-serif-medium"

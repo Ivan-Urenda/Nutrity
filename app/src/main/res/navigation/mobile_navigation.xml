@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/nav_configuracion"
         android:name="com.example.nutrity.ui.configuracion.ConfiguracionFragment"
-        android:label="Perfil"
+        android:label="Profile"
         tools:layout="@layout/configuracion_fragment" />
     <fragment
         android:id="@+id/nav_recetas"
@@ -25,7 +25,7 @@
         android:id="@+id/nav_imc"
         android:name="com.example.nutrity.ui.caloriesCalculator.CaloriesCalculatorFragment"
         android:label="Calories calculator"
-        tools:layout="@layout/caloriesCalculatorFragment" />
+        tools:layout="@layout/calculator_fragment" />
     <fragment
         android:id="@+id/platilloFragment"
         android:name="com.example.nutrity.ui.platillo.PlatilloFragment"

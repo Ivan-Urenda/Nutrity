@@ -29,7 +29,7 @@
             android:layout_marginHorizontal="4dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/imageUser"
                 android:layout_width="139dp"
                 android:layout_height="149dp"
                 android:layout_gravity="center"
@@ -47,7 +47,7 @@
                 android:contentDescription="@string/add_photo"
                 android:src="@drawable/ic_camera"
                 app:fabSize="mini"
-                app:layout_anchor="@id/imageView3"
+                app:layout_anchor="@id/imageUser"
                 app:layout_anchorGravity="bottom|end"
                 app:tint="@color/white" />
 

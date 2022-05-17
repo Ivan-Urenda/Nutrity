@@ -24,10 +24,10 @@ import kotlin.math.roundToInt
 class CaloriesCalculatorFragment : Fragment() {
 
     private var _binding: CalculatorFragmentBinding? = null
-    private val db = Firebase.firestore
     private lateinit var objetivo: Spinner
     private lateinit var genero: Spinner
     private lateinit var fActividad: Spinner
+    var cal = 0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -63,7 +63,6 @@ class CaloriesCalculatorFragment : Fragment() {
 
         binding.calculateButton.setOnClickListener {
 
-            var cal = 0
             when (binding.genero.selectedItem.toString()) {
                 "Men" -> {
                     if (binding.weight.text.toString().isEmpty() || binding.height.text.toString()
@@ -180,44 +179,19 @@ class CaloriesCalculatorFragment : Fragment() {
                             }
 
                         }
-
-                        val request = Volley.newRequestQueue(context)
-                        val email = Firebase.auth.currentUser?.email.toString()
-                        savePrefs(cal)
-
-                        var url =
-                            "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}"+
-                                    "&weight=${binding.weight.text.toString().toInt()}&height=${binding.height.text.toString().toInt()}"+
-                                    "&age${binding.age.text.toString().toInt()}&objective${binding.objetivo.selectedItem}"
-
-                        url = url.replace(" ", "%20")
-                        val stringRequest = StringRequest(Request.Method.GET, url, { response ->
-
-                        }, { error ->
-
-                        })
-                        request.add(stringRequest)
                     }
-                    objetivo.setSelection(0)
-                    genero.setSelection(0)
-                    fActividad.setSelection(0)
-                    binding.weight.text.clear()
-                    binding.height.text.clear()
-                    binding.age.text.clear()
+                    saveValues()
                 }
 
                 "Women" -> {
                     if (binding.weight.text.toString().isEmpty() || binding.height.text.toString()
                             .isEmpty() || binding.age.toString().isEmpty()
                     ) {
-                        Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT).show()
                     } else if (binding.height.text.toString().toDouble() > 272) {
-                        Toast.makeText(context, "Please enter a valid height", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Please enter a valid height", Toast.LENGTH_SHORT).show()
                     } else if (binding.age.text.toString().toDouble() > 100) {
-                        Toast.makeText(context, "Please enter a valid age", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Please enter a valid age", Toast.LENGTH_SHORT).show()
                     } else {
 
                         when (binding.fActividad.selectedItem.toString()) {
@@ -317,30 +291,8 @@ class CaloriesCalculatorFragment : Fragment() {
                                 }
                             }
                         }
-
-                        val request = Volley.newRequestQueue(context)
-                        val email = Firebase.auth.currentUser?.email.toString()
-                        savePrefs(cal)
-
-                        var url =
-                            "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}"+
-                                    "&weight=${binding.weight.text.toString().toInt()}&height=${binding.height.text.toString().toInt()}"+
-                                    "&age${binding.age.text.toString().toInt()}&objective${binding.objetivo.selectedItem}"
-
-                        url = url.replace(" ", "%20")
-                        val stringRequest = StringRequest(Request.Method.GET, url, { response ->
-
-                        }, { error ->
-
-                        })
-                        request.add(stringRequest)
                     }
-                    objetivo.setSelection(0)
-                    genero.setSelection(0)
-                    fActividad.setSelection(0)
-                    binding.weight.text.clear()
-                    binding.height.text.clear()
-                    binding.age.text.clear()
+                    saveValues()
                 }
             }
             (activity as MainActivity?)?.setCaloriesGoal()
@@ -354,6 +306,32 @@ class CaloriesCalculatorFragment : Fragment() {
         prefs.saveHeight(binding.height.text.toString().toInt())
         prefs.saveAge(binding.age.text.toString().toInt())
         prefs.saveObjective(binding.objetivo.selectedItem.toString())
+    }
+
+    private fun saveValues(){
+        val request = Volley.newRequestQueue(context)
+        val email = Firebase.auth.currentUser?.email.toString()
+        savePrefs(cal)
+
+        val weight = binding.weight.text.toString()
+        val height = binding.height.text.toString()
+        val age = binding.age.text.toString()
+        val objective = binding.objetivo.selectedItem.toString()
+
+        var url = "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}&weight=${weight}&height=${height}&age=${age}&objective=${objective}"
+
+        url = url.replace(" ", "%20")
+        var stringRequest = StringRequest(Request.Method.GET, url, { _ -> clear()}, { _ ->})
+        request.add(stringRequest)
+    }
+
+    private fun clear(){
+        objetivo.setSelection(0)
+        genero.setSelection(0)
+        fActividad.setSelection(0)
+        binding.weight.text.clear()
+        binding.height.text.clear()
+        binding.age.text.clear()
     }
 
 

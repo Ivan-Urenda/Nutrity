@@ -1,12 +1,19 @@
 package com.example.nutrity.ui.login
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.PackageManagerCompat
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -30,6 +37,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.jar.Manifest
 
 class LoginActivity : AppCompatActivity() {
 
@@ -79,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        checkUserValues()
+        requestPermissions()
     }
 
     private fun checkUserValues() {
@@ -87,6 +95,48 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
             this.finish()
         }
+    }
+
+    private fun requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (
+                ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                checkUserValues()
+            } else {
+                requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        } else {
+            checkUserValues()
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            checkUserValues()
+        } else {
+            alertDialog()
+        }
+    }
+
+    private fun alertDialog(){
+        try {
+            AlertDialog.Builder(this).apply {
+                setTitle("Alert")
+                setMessage("Nutrity needs permission to access your media files to function properly. Activate them to continue")
+                setPositiveButton("Acept") { _: DialogInterface, _: Int -> endActivity()}
+            }.show()
+        }catch (e: Exception){
+
+        }
+    }
+
+    fun endActivity(){
+        this.finish()
     }
 
     /*
@@ -137,8 +187,6 @@ class LoginActivity : AppCompatActivity() {
     private fun userHasAProfile(email: String) {
         GlobalScope.launch(Dispatchers.Main) {
 
-            val userHasEditedProfile = prefs.getConfig()
-
             var state = false
 
             if (binding.checkBox.isChecked) {
@@ -147,25 +195,18 @@ class LoginActivity : AppCompatActivity() {
 
             withContext(Dispatchers.IO){
 
-                if (userHasEditedProfile){
-                    prefs.saveLogged(state)
-                    val request = Volley.newRequestQueue(applicationContext)
-                    var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
-                    url=url.replace(" ", "%20")
-                    val stringRequest = StringRequest(Request.Method.GET, url, { response ->
+                val request = Volley.newRequestQueue(applicationContext)
+                var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                url=url.replace(" ", "%20")
+                val stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
-                        val jsonArray = JSONArray(response)
-                        val jsonObject = JSONObject(jsonArray.getString(0))
-                        setValuesPrefs(jsonObject, email, state)
-                    }, { error ->
+                    val jsonArray = JSONArray(response)
+                    val jsonObject = JSONObject(jsonArray.getString(0))
+                    setValuesPrefs(jsonObject, email, state)
+                }, { error ->
 
-                    })
-                    request.add(stringRequest)
-                }
-                else{
-                    loading.isDismiss()
-                    redirectToUserProfile(email, state)
-                }
+                })
+                request.add(stringRequest)
 
             }
         }
@@ -173,20 +214,29 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setValuesPrefs(jsonObject: JSONObject, email: String, state: Boolean)
     {
-        prefs.saveCalories(jsonObject.get("calories").toString().toInt())
-        prefs.saveProgress(jsonObject.get("progress").toString().toInt())
-        prefs.saveProteins(jsonObject.get("proteins").toString().toInt())
-        prefs.saveCarbs(jsonObject.get("carbs").toString().toInt())
-        prefs.saveFats(jsonObject.get("fats").toString().toInt())
-        prefs.saveUsername(jsonObject.get("username").toString())
-        prefs.saveFirstName(jsonObject.get("firstName").toString())
-        prefs.saveLastName(jsonObject.get("lastName").toString())
-        prefs.saveWeight(jsonObject.get("weight").toString().toInt())
-        prefs.saveHeight(jsonObject.get("height").toString().toInt())
-        prefs.saveAge(jsonObject.get("age").toString().toInt())
-        prefs.saveObjective(jsonObject.get("objective").toString())
-        loading.isDismiss()
-        redirectToHome(email)
+        if (jsonObject.get("profileEdited").toString().toInt() == 0){
+            loading.isDismiss()
+            redirectToUserProfile(email, state)
+        }
+        else{
+            prefs.saveLogged(state)
+            prefs.saveCalories(jsonObject.get("calories").toString().toInt())
+            prefs.saveProgress(jsonObject.get("progress").toString().toInt())
+            prefs.saveProteins(jsonObject.get("proteins").toString().toInt())
+            prefs.saveCarbs(jsonObject.get("carbs").toString().toInt())
+            prefs.saveFats(jsonObject.get("fats").toString().toInt())
+            prefs.saveUsername(jsonObject.get("username").toString())
+            prefs.saveFirstName(jsonObject.get("firstName").toString())
+            prefs.saveLastName(jsonObject.get("lastName").toString())
+            prefs.saveWeight(jsonObject.get("weight").toString().toInt())
+            prefs.saveHeight(jsonObject.get("height").toString().toInt())
+            prefs.saveAge(jsonObject.get("age").toString().toInt())
+            prefs.saveObjective(jsonObject.get("objective").toString())
+            prefs.saveUri(jsonObject.get("uriImage").toString())
+            prefs.saveLogged(state)
+            loading.isDismiss()
+            redirectToHome(email)
+        }
 
     }
 

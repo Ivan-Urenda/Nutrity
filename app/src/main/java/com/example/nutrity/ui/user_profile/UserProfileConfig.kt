@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -76,9 +77,9 @@ class UserProfileConfig : AppCompatActivity() {
 
         with(binding) {
 
-            imageViewSelected = imageView3
+            imageViewSelected = imageUser
 
-            imageView3.setOnClickListener {
+            imageUser.setOnClickListener {
                 requestPermissions()
                 photoHasChanged = true
             }
@@ -117,6 +118,15 @@ class UserProfileConfig : AppCompatActivity() {
                     cleanErrors(lastNameTextInput, lastNameLayout)
                 }
             }
+
+            if (prefs.getUri()!="")
+            {
+                imageUser.setImageURI(prefs.getUri().toUri())
+                userNameLayout.hint = prefs.getUsername()
+                firstNameLayout.hint = prefs.getFirstName()
+                lastNameLayout.hint = prefs.getLastName()
+            }
+
         }
     }
 
@@ -134,7 +144,7 @@ class UserProfileConfig : AppCompatActivity() {
     private fun uploadUserConfig(
         username: String,
         firstname: String,
-        lastname: String,
+        lastname: String
     ) {
         if(!validateForm(username, firstname, lastname)) return
 
@@ -147,8 +157,13 @@ class UserProfileConfig : AppCompatActivity() {
             withContext(Dispatchers.IO){
                 val request = Volley.newRequestQueue(applicationContext)
 
-                var url = "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
-                        "&lastName=${lastname}" + "&username=${username}"
+                var url: String = if(uriImage == null) {
+                    "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
+                            "&lastName=${lastname}" + "&username=${username}&uriImage=${prefs.getUri()}"
+                } else{
+                    "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
+                            "&lastName=${lastname}" + "&username=${username}&uriImage=${uriImage.toString()}"
+                }
 
                 url=url.replace(" ", "%20")
                 var stringRequest = StringRequest(Request.Method.GET, url, { response ->
@@ -198,8 +213,12 @@ class UserProfileConfig : AppCompatActivity() {
         prefs.saveLogged(state)
         prefs.saveFirstName(firstname)
         prefs.saveLastName(lastname)
-        prefs.saveConfig(true)
-        if (uriImage!=null){prefs.saveUri(uriImage.toString())}
+        if (uriImage!=null){
+            if (prefs.getUri()==""){
+                prefs.saveUri(uriImage.toString())
+            }
+
+        }
         loading.isDismiss()
         redirectToHome()
     }

@@ -66,7 +66,7 @@ class CaloriasFragment : Fragment() {
         progressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#38B745"))
 
         if (prefs.getCalories() == 0) {
-            alert("You should calculate your BMI first before looking at your progress for the day.")
+            alert("You should first calculate your target calories before seeing your progress for the day.")
         } else {
             loadData()
         }
