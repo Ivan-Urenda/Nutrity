@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -40,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
 
     private lateinit var auth: FirebaseAuth
+    private var permission = false
 
     // Loading Alert Modal
     private val loading = Loading(this)
@@ -113,10 +115,8 @@ class LoginActivity : AppCompatActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
-        if (isGranted) {
-            checkUserValues()
-        } else {
-            alertDialog()
+        if(isGranted) {
+            permission = true
         }
     }
 
@@ -125,7 +125,7 @@ class LoginActivity : AppCompatActivity() {
             AlertDialog.Builder(this).apply {
                 setTitle("Alert")
                 setMessage("Nutrity needs permission to access your media files to function properly. Activate them to continue")
-                setPositiveButton("Acept") { _: DialogInterface, _: Int -> endActivity()}
+                setPositiveButton("Acept") { _: DialogInterface, _: Int ->}
             }.show()
         }catch (e: Exception){
 
@@ -213,7 +213,11 @@ class LoginActivity : AppCompatActivity() {
     {
         if (jsonObject.get("profileEdited").toString().toInt() == 0){
             loading.isDismiss()
-            redirectToUserProfile(email, state)
+            if (permission){
+                redirectToUserProfile(email, state)
+            }else {
+                alertDialog()
+            }
         }
         else{
             prefs.saveLogged(state)
@@ -232,7 +236,11 @@ class LoginActivity : AppCompatActivity() {
             prefs.saveUri(jsonObject.get("uriImage").toString())
             prefs.saveLogged(state)
             loading.isDismiss()
-            redirectToHome(email)
+            if (permission){
+                redirectToHome(email)
+            }else {
+                alertDialog()
+            }
         }
 
     }
