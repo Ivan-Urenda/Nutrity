@@ -7,28 +7,28 @@
 
     <fragment
         android:id="@+id/nav_calorias"
-        android:name="com.example.nutrity.ui.calorias.CaloriasFragment"
+        android:name="com.appNutrity.nutrity.ui.calorias.CaloriasFragment"
         android:label="@string/menu_calorias"
         tools:layout="@layout/fragment_calorias" />
 
     <fragment
         android:id="@+id/nav_configuracion"
-        android:name="com.example.nutrity.ui.configuracion.ConfiguracionFragment"
+        android:name="com.appNutrity.nutrity.ui.configuracion.ConfiguracionFragment"
         android:label="Profile"
         tools:layout="@layout/configuracion_fragment" />
     <fragment
         android:id="@+id/nav_recetas"
-        android:name="com.example.nutrity.ui.comidas.ComidasFragment"
+        android:name="com.appNutrity.nutrity.ui.comidas.ComidasFragment"
         android:label="@string/menu_recetas"
         tools:layout="@layout/comidas_fragment" />
     <fragment
         android:id="@+id/nav_imc"
-        android:name="com.example.nutrity.ui.caloriesCalculator.CaloriesCalculatorFragment"
+        android:name="com.appNutrity.nutrity.ui.caloriesCalculator.CaloriesCalculatorFragment"
         android:label="Calories calculator"
         tools:layout="@layout/calculator_fragment" />
     <fragment
         android:id="@+id/platilloFragment"
-        android:name="com.example.nutrity.ui.platillo.PlatilloFragment"
+        android:name="com.appNutrity.nutrity.ui.platillo.PlatilloFragment"
         android:label="Recipe"
         tools:layout="@layout/platillo_fragment" />
 </navigation>
