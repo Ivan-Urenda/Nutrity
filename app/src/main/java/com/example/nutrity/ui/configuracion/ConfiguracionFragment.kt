@@ -10,10 +10,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.core.net.toUri
-import com.example.nutrity.MainActivity
-import com.example.nutrity.R
 import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.databinding.ConfiguracionFragmentBinding
 import com.example.nutrity.ui.login.LoginActivity

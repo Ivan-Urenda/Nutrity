@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.nutrity.R
 import com.example.nutrity.databinding.ActivityForgotPassBinding

@@ -8,7 +8,6 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -23,9 +22,7 @@ import com.android.volley.toolbox.Volley
 import com.example.nutrity.R
 import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.databinding.FragmentCaloriasBinding
-import com.example.nutrity.uielements.Loading
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import org.json.JSONArray

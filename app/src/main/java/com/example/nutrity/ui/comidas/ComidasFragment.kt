@@ -17,9 +17,6 @@ import com.example.nutrity.adapter.RecipeAdapter
 import com.example.nutrity.models.RootObjectModel
 import com.example.nutrity.response.SearchRecipes
 import com.example.nutrity.utils.APICredential
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback

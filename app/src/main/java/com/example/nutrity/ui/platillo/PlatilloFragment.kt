@@ -1,7 +1,6 @@
 package com.example.nutrity.ui.platillo
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.hardware.Sensor
@@ -20,17 +19,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.nutrity.MainActivity
 import com.example.nutrity.R
 import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
-import com.example.nutrity.uielements.Loading
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
-import kotlin.concurrent.timer
 
 
 class PlatilloFragment : Fragment(), SensorEventListener {
