@@ -29,6 +29,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -50,6 +52,9 @@ class LoginActivity : AppCompatActivity() {
 
         val view = binding.root
         setContentView(view)
+
+        // Initialize Firebase Auth
+        auth = Firebase.auth
 
         with(binding) {
             // Redirects to the Sign Up Activity
