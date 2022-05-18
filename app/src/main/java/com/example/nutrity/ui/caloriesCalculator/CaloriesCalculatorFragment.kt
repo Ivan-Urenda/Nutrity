@@ -17,8 +17,8 @@ import com.example.nutrity.R
 import com.example.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.example.nutrity.databinding.CalculatorFragmentBinding
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.lang.Exception
 import kotlin.math.roundToInt
 
 class CaloriesCalculatorFragment : Fragment() {
@@ -32,6 +32,59 @@ class CaloriesCalculatorFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    fun getCaloriesMessage(
+        weight: String,
+        height: String,
+        age: String,
+        gender: String,
+        activityLevel: String,
+        goal: String
+    ): String {
+        var weightDouble: Double
+        var heightDouble: Double
+        var ageDouble: Double
+        try {
+            weightDouble = weight.toDouble()
+            heightDouble = height.toDouble()
+            ageDouble = age.toDouble()
+        } catch (e: Exception) {
+            throw Exception("Please enter a valid number")
+        }
+        if (weight.isEmpty()) {
+            throw Exception("Please enter a valid weight value")
+        }
+        if (height.isEmpty()) {
+            throw Exception("Please enter a valid height value")
+        }
+        if (age.isEmpty()) {
+            throw Exception("Please enter a valid age value")
+        }
+        var activityCoefficient = when (activityLevel) {
+            "Sedentary" -> 1.2
+            "Little activity" -> 1.375
+            "Moderate activity" -> 1.55
+            "Intense activity" -> 1.725
+            else -> throw Exception("Please enter a valid activity value")
+        }.toDouble()
+        var caloriesCalculation = when (gender) {
+            "Men" -> ((66 + (13.7 * weightDouble) +
+                    ((5 * heightDouble) - (6.8 * ageDouble))) * activityCoefficient).roundToInt()
+            "Women" ->
+                ((655 + (9.6 * weightDouble) +
+                        ((1.8 * heightDouble) - (4.7 * ageDouble))) * activityCoefficient).roundToInt()
+            else -> throw Exception("Please enter a valid gender value")
+        }
+        return when (goal) {
+            "Lose weight" ->
+                "You must consume less than " + caloriesCalculation + " calories to lose weight"
+            "Gain Weight" ->
+                "You must consume more than " + caloriesCalculation + " calories to gain weight"
+            "Maintain weight" ->
+                "You must consume " + caloriesCalculation + " calories to maintain your weight"
+            else -> throw Exception("Please enter a valid objective value")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,245 +115,25 @@ class CaloriesCalculatorFragment : Fragment() {
         fActividad.adapter = adaptador
 
         binding.calculateButton.setOnClickListener {
-
-            when (binding.genero.selectedItem.toString()) {
-                "Men" -> {
-                    if (binding.weight.text.toString().isEmpty() || binding.height.text.toString()
-                            .isEmpty() || binding.age.toString().isEmpty()
-                    ) {
-                        Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (binding.height.text.toString().toDouble() > 272) {
-                        Toast.makeText(context, "Please enter a valid height", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (binding.age.text.toString().toDouble() > 100) {
-                        Toast.makeText(context, "Please enter a valid age", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-
-                        when (binding.fActividad.selectedItem.toString()) {
-                            "Sedentary" -> {
-                                cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
-                                        ((5 * binding.height.text.toString()
-                                            .toDouble()) - (6.8 * binding.age.text.toString()
-                                            .toDouble()))) * 1.2).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-                            }
-
-                            "Little activity" -> {
-                                cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
-                                        ((5 * binding.height.text.toString()
-                                            .toDouble()) - (6.8 * binding.age.text.toString()
-                                            .toDouble()))) * 1.375).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-
-                            }
-
-                            "Moderate activity" -> {
-                                cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
-                                        ((5 * binding.height.text.toString()
-                                            .toDouble()) - (6.8 * binding.age.text.toString()
-                                            .toDouble()))) * 1.55).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-
-                            }
-
-                            "Intense activity" -> {
-                                cal = ((66 + (13.7 * binding.weight.text.toString().toDouble()) +
-                                        ((5 * binding.height.text.toString()
-                                            .toDouble()) - (6.8 * binding.age.text.toString()
-                                            .toDouble()))) * 1.725).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-
-                            }
-
-                        }
-                    }
-                    saveValues()
-                }
-
-                "Women" -> {
-                    if (binding.weight.text.toString().isEmpty() || binding.height.text.toString()
-                            .isEmpty() || binding.age.toString().isEmpty()
-                    ) {
-                        Toast.makeText(context, "Please enter a valid value", Toast.LENGTH_SHORT).show()
-                    } else if (binding.height.text.toString().toDouble() > 272) {
-                        Toast.makeText(context, "Please enter a valid height", Toast.LENGTH_SHORT).show()
-                    } else if (binding.age.text.toString().toDouble() > 100) {
-                        Toast.makeText(context, "Please enter a valid age", Toast.LENGTH_SHORT).show()
-                    } else {
-
-                        when (binding.fActividad.selectedItem.toString()) {
-                            "Sedentary" -> {
-                                cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
-                                        ((1.8 * binding.height.text.toString()
-                                            .toDouble()) - (4.7 * binding.age.text.toString()
-                                            .toDouble()))) * 1.2).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-                            }
-
-                            "Little activity" -> {
-                                cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
-                                        ((1.8 * binding.height.text.toString()
-                                            .toDouble()) - (4.7 * binding.age.text.toString()
-                                            .toDouble()))) * 1.375).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-                            }
-
-                            "Moderate activity" -> {
-                                cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
-                                        ((1.8 * binding.height.text.toString()
-                                            .toDouble()) - (4.7 * binding.age.text.toString()
-                                            .toDouble()))) * 1.55).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-                            }
-
-                            "Intense activity" -> {
-                                cal = ((655 + (9.6 * binding.weight.text.toString().toDouble()) +
-                                        ((1.8 * binding.height.text.toString()
-                                            .toDouble()) - (4.7 * binding.age.text.toString()
-                                            .toDouble()))) * 1.725).roundToInt()
-
-                                when (binding.objetivo.selectedItem.toString()) {
-                                    "Lose weight" -> {
-                                        binding.result.text =
-                                            "You must consume less than " + cal + " calories to lose weight"
-                                    }
-
-                                    "Gain weight" -> {
-                                        binding.result.text =
-                                            "You must consume more than " + cal + " calories to gain weight"
-                                    }
-
-                                    "Maintain weight" -> {
-                                        binding.result.text =
-                                            "You must consume " + cal + " calories to maintain your weight"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    saveValues()
-                }
+            try {
+                var caloriesMessage = getCaloriesMessage(
+                    binding.weight.text.toString(),
+                    binding.height.text.toString(),
+                    binding.age.text.toString(),
+                    binding.genero.selectedItem.toString(),
+                    binding.fActividad.selectedItem.toString(),
+                    binding.objetivo.selectedItem.toString()
+                )
+                binding.result.text = caloriesMessage
+            } catch (e: Exception) {
+                Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show()
             }
             (activity as MainActivity?)?.setCaloriesGoal()
         }
         return root
     }
 
-    private fun savePrefs(cal: Int){
+    private fun savePrefs(cal: Int) {
         prefs.saveCalories(cal)
         prefs.saveWeight(binding.weight.text.toString().toInt())
         prefs.saveHeight(binding.height.text.toString().toInt())
@@ -308,7 +141,7 @@ class CaloriesCalculatorFragment : Fragment() {
         prefs.saveObjective(binding.objetivo.selectedItem.toString())
     }
 
-    private fun saveValues(){
+    private fun saveValues() {
         val request = Volley.newRequestQueue(context)
         val email = Firebase.auth.currentUser?.email.toString()
         savePrefs(cal)
@@ -318,14 +151,15 @@ class CaloriesCalculatorFragment : Fragment() {
         val age = binding.age.text.toString()
         val objective = binding.objetivo.selectedItem.toString()
 
-        var url = "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}&weight=${weight}&height=${height}&age=${age}&objective=${objective}"
+        var url =
+            "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}&weight=${weight}&height=${height}&age=${age}&objective=${objective}"
 
         url = url.replace(" ", "%20")
-        var stringRequest = StringRequest(Request.Method.GET, url, { _ -> clear()}, { _ ->})
+        var stringRequest = StringRequest(Request.Method.GET, url, { _ -> clear() }, { _ -> })
         request.add(stringRequest)
     }
 
-    private fun clear(){
+    private fun clear() {
         objetivo.setSelection(0)
         genero.setSelection(0)
         fActividad.setSelection(0)
