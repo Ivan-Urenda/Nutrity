@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.nutrity.databinding.EmailVerificationBinding
 import com.example.nutrity.ui.login.LoginActivity
 import com.example.nutrity.uielements.Loading
@@ -25,6 +26,7 @@ class EmailVerification : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         binding = EmailVerificationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)

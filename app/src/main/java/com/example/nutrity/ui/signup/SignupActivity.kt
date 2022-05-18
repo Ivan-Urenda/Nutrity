@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatDelegate
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -34,7 +35,7 @@ class SignupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -123,7 +124,7 @@ class SignupActivity : AppCompatActivity() {
     private fun uploadUser(email: String) {
         val request = Volley.newRequestQueue(this)
         val url = "https://ivanurenda.000webhostapp.com/Registro.php?email=${email}"
-        val stringRequest = StringRequest(Request.Method.GET, url, { _ ->}, { _ ->})
+        val stringRequest = StringRequest(Request.Method.POST, url, { _ ->}, { _ ->})
         request.add(stringRequest)
     }
 

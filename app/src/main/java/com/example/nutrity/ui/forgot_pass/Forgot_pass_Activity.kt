@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.nutrity.R
 import com.example.nutrity.databinding.ActivityForgotPassBinding
 import com.example.nutrity.ui.login.LoginActivity
@@ -32,6 +33,7 @@ class Forgot_pass_Activity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         binding = ActivityForgotPassBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

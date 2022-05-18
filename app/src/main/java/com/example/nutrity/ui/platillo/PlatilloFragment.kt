@@ -105,18 +105,13 @@ class PlatilloFragment : Fragment(), SensorEventListener {
         addBtn.setOnClickListener {
             loadingDialog()
             GlobalScope.launch(Dispatchers.Main) {
-                var actualProgress: Int? = null
-                var proteins: Int? = null
-                var carbs: Int? = null
-                var fats: Int? = null
 
                 withContext(Dispatchers.IO) {
 
                     val request = Volley.newRequestQueue(context)
                     val email = Firebase.auth.currentUser?.email.toString()
 
-                    //Cambiar nombre del archivo Calories.php a Nutrients.php
-                    var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                    var url = "https://ivanurenda.000webhostapp.com/UserData.php?email=${email}"
                     url=url.replace(" ", "%20")
                     val stringRequest = StringRequest(Request.Method.GET, url, { response ->
 
@@ -165,7 +160,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
                     "&proteins=${progressProteins}&carbs=${progressCarbs}&fats=${progressFats}"
 
             url=url.replace(" ", "%20")
-            val stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            val stringRequest = StringRequest(Request.Method.POST, url, { response ->
 
             }, { error ->
 
@@ -186,7 +181,7 @@ class PlatilloFragment : Fragment(), SensorEventListener {
             var url = "https://ivanurenda.000webhostapp.com/AddRecipes.php?email=${email}&recipeName=${arguments?.getString("name").toString()}"
 
             url=url.replace(" ", "%20")
-            val stringRequest = StringRequest(Request.Method.GET, url, { response ->
+            val stringRequest = StringRequest(Request.Method.POST, url, { response ->
 
             }, { error ->
 

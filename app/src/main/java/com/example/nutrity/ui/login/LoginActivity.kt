@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.content.PackageManagerCompat
 import com.android.volley.Request
@@ -51,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         binding = ActivityLoginBinding.inflate(layoutInflater)
 
         val view = binding.root
@@ -196,7 +198,7 @@ class LoginActivity : AppCompatActivity() {
             withContext(Dispatchers.IO){
 
                 val request = Volley.newRequestQueue(applicationContext)
-                var url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                var url = "https://ivanurenda.000webhostapp.com/UserData.php?email=${email}"
                 url=url.replace(" ", "%20")
                 val stringRequest = StringRequest(Request.Method.GET, url, { response ->
 

@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.android.volley.Request
@@ -69,6 +70,7 @@ class UserProfileConfig : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         binding = ActivityUserProfileConfigBinding.inflate(layoutInflater)
 
         val view = binding.root
@@ -166,7 +168,7 @@ class UserProfileConfig : AppCompatActivity() {
                 }
 
                 url=url.replace(" ", "%20")
-                var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+                var stringRequest = StringRequest(Request.Method.POST, url, { response ->
 
                 }, { error ->
 
@@ -176,7 +178,7 @@ class UserProfileConfig : AppCompatActivity() {
 
                 delay(1000)
 
-                url = "https://ivanurenda.000webhostapp.com/Calories.php?email=${email}"
+                url = "https://ivanurenda.000webhostapp.com/UserData.php?email=${email}"
                 url=url.replace(" ", "%20")
                 stringRequest = StringRequest(Request.Method.GET, url, { response ->
 

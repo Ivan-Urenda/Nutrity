@@ -27,11 +27,12 @@ class CaloriesCalculatorFragment : Fragment() {
     private lateinit var objetivo: Spinner
     private lateinit var genero: Spinner
     private lateinit var fActividad: Spinner
-    var cal = 0
+    var caloriesCalculation = 0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
 
     fun getCaloriesMessage(
         weight: String,
@@ -49,17 +50,27 @@ class CaloriesCalculatorFragment : Fragment() {
             heightDouble = height.toDouble()
             ageDouble = age.toDouble()
         } catch (e: Exception) {
+            if (weight.isEmpty()) {
+                throw Exception("Please enter a valid weight value")
+            }
+            if (height.isEmpty()) {
+                throw Exception("Please enter a valid height value")
+            }
+            if (age.isEmpty()) {
+                throw Exception("Please enter a valid age value")
+            }
             throw Exception("Please enter a valid number")
         }
-        if (weight.isEmpty()) {
+        if (weightDouble > 250) {
             throw Exception("Please enter a valid weight value")
         }
-        if (height.isEmpty()) {
+        if (heightDouble > 250) {
             throw Exception("Please enter a valid height value")
         }
-        if (age.isEmpty()) {
+        if (ageDouble > 119) {
             throw Exception("Please enter a valid age value")
         }
+
         var activityCoefficient = when (activityLevel) {
             "Sedentary" -> 1.2
             "Little activity" -> 1.375
@@ -67,7 +78,7 @@ class CaloriesCalculatorFragment : Fragment() {
             "Intense activity" -> 1.725
             else -> throw Exception("Please enter a valid activity value")
         }.toDouble()
-        var caloriesCalculation = when (gender) {
+        caloriesCalculation = when (gender) {
             "Men" -> ((66 + (13.7 * weightDouble) +
                     ((5 * heightDouble) - (6.8 * ageDouble))) * activityCoefficient).roundToInt()
             "Women" ->
@@ -78,7 +89,7 @@ class CaloriesCalculatorFragment : Fragment() {
         return when (goal) {
             "Lose weight" ->
                 "You must consume less than " + caloriesCalculation + " calories to lose weight"
-            "Gain Weight" ->
+            "Gain weight" ->
                 "You must consume more than " + caloriesCalculation + " calories to gain weight"
             "Maintain weight" ->
                 "You must consume " + caloriesCalculation + " calories to maintain your weight"
@@ -125,26 +136,29 @@ class CaloriesCalculatorFragment : Fragment() {
                     binding.objetivo.selectedItem.toString()
                 )
                 binding.result.text = caloriesMessage
+                saveValues()
             } catch (e: Exception) {
                 Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show()
             }
-            (activity as MainActivity?)?.setCaloriesGoal()
         }
+
+
         return root
     }
 
-    private fun savePrefs(cal: Int) {
-        prefs.saveCalories(cal)
+    private fun savePrefs() {
+        prefs.saveCalories(caloriesCalculation)
         prefs.saveWeight(binding.weight.text.toString().toInt())
         prefs.saveHeight(binding.height.text.toString().toInt())
         prefs.saveAge(binding.age.text.toString().toInt())
         prefs.saveObjective(binding.objetivo.selectedItem.toString())
+        (activity as MainActivity?)?.setCaloriesGoal()
     }
 
     private fun saveValues() {
         val request = Volley.newRequestQueue(context)
         val email = Firebase.auth.currentUser?.email.toString()
-        savePrefs(cal)
+        savePrefs()
 
         val weight = binding.weight.text.toString()
         val height = binding.height.text.toString()
@@ -152,10 +166,10 @@ class CaloriesCalculatorFragment : Fragment() {
         val objective = binding.objetivo.selectedItem.toString()
 
         var url =
-            "https://ivanurenda.000webhostapp.com/CalculateBIM.php?email=${email}&calories=${cal}&weight=${weight}&height=${height}&age=${age}&objective=${objective}"
+            "https://ivanurenda.000webhostapp.com/CalculateCalories.php?email=${email}&calories=${caloriesCalculation}&weight=${weight}&height=${height}&age=${age}&objective=${objective}"
 
         url = url.replace(" ", "%20")
-        var stringRequest = StringRequest(Request.Method.GET, url, { _ -> clear() }, { _ -> })
+        var stringRequest = StringRequest(Request.Method.POST, url, { _ -> clear() }, { _ -> })
         request.add(stringRequest)
     }
 
