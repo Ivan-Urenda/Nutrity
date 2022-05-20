@@ -3,6 +3,7 @@ package com.appNutrity.nutrity.ui.user_profile
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +26,7 @@ import com.appNutrity.nutrity.databinding.ActivityUserProfileConfigBinding
 import com.appNutrity.nutrity.uielements.Loading
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -35,6 +37,7 @@ class UserProfileConfig : AppCompatActivity() {
     private var uriImage: Uri? = null
     private lateinit var imageViewSelected: ImageView
     private var aux = false
+    private lateinit var path: String
 
     // Variable that tracks if a the user profile image was replaced
     private var photoHasChanged = false
@@ -45,8 +48,22 @@ class UserProfileConfig : AppCompatActivity() {
     private val pickImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if(result.resultCode == RESULT_OK) {
             uriImage = result.data?.data!!
+            path = getRealPathFromURI(uriImage)!!
             imageViewSelected.setImageURI(uriImage)
+
         }
+    }
+
+    fun getRealPathFromURI(contentUri: Uri?): String? {
+        var path: String? = null
+        val proj = arrayOf(MediaStore.MediaColumns.DATA)
+        val cursor: Cursor = contentResolver.query(contentUri!!, proj, null, null, null)!!
+        if (cursor.moveToFirst()) {
+            val column_index: Int = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
+            path = cursor.getString(column_index)
+        }
+        cursor.close()
+        return path
     }
 
     private fun pickImageFromGallery() {
@@ -114,7 +131,7 @@ class UserProfileConfig : AppCompatActivity() {
 
             if (prefs.getUri()!="")
             {
-                imageUser.setImageURI(prefs.getUri().toUri())
+                Picasso.get().load("file://"+prefs.getUri()).into(imageUser)
                 aux = true
 
             }
@@ -160,7 +177,7 @@ class UserProfileConfig : AppCompatActivity() {
                             "&lastName=${lastname}" + "&username=${username}&uriImage=${prefs.getUri()}"
                 } else{
                     "https://ivanurenda.000webhostapp.com/ConfigUser.php?email=${email}&firstName=${firstname}" +
-                            "&lastName=${lastname}" + "&username=${username}&uriImage=${uriImage.toString()}"
+                            "&lastName=${lastname}" + "&username=${username}&uriImage=${path}"
                 }
 
                 url=url.replace(" ", "%20")
@@ -221,7 +238,7 @@ class UserProfileConfig : AppCompatActivity() {
         prefs.saveFirstName(firstname)
         prefs.saveLastName(lastname)
         if (uriImage!=null){
-            prefs.saveUri(uriImage.toString())
+            prefs.saveUri(path)
         }
         loading.isDismiss()
         redirectToHome()

@@ -85,8 +85,6 @@ class LoginActivity : AppCompatActivity() {
                 signIn(emailValue, passwordValue)
             }
         }
-
-        Toast.makeText(applicationContext, prefs.getUri(), Toast.LENGTH_SHORT).show()
         requestPermissions()
     }
 

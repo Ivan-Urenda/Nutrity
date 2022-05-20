@@ -23,6 +23,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.appNutrity.nutrity.dataPersistence.loggedIn.Companion.prefs
 import com.appNutrity.nutrity.databinding.ActivityMainBinding
+import com.squareup.picasso.Picasso
 
 enum class ProviderType{
     BASIC
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         val uri = prefs.getUri()
         if(uri != ""){
-            ivUser.setImageURI(uri.toUri())
+            Picasso.get().load("file://"+prefs.getUri()).into(ivUser)
         }
 
     }
