@@ -103,6 +103,7 @@ class LoginActivity : AppCompatActivity() {
                     android.Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
+                permission = true
                 checkUserValues()
             } else {
                 requestPermissionLauncher.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -130,10 +131,6 @@ class LoginActivity : AppCompatActivity() {
         }catch (e: Exception){
 
         }
-    }
-
-    fun endActivity(){
-        this.finish()
     }
 
     /*
