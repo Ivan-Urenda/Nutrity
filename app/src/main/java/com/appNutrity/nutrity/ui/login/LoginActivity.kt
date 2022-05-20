@@ -211,6 +211,7 @@ class LoginActivity : AppCompatActivity() {
         if (jsonObject.get("profileEdited").toString().toInt() == 0){
             loading.isDismiss()
             if (permission){
+                prefs.wipe()
                 redirectToUserProfile(email, state)
             }else {
                 alertDialog()
