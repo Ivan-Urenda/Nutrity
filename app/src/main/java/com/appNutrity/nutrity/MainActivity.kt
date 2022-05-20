@@ -91,6 +91,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setNewData(){
+        username.text = prefs.getUsername()
+        setCaloriesGoal()
+
+        val uri = prefs.getUri()
+        if(uri != ""){
+            ivUser.setImageURI(uri.toUri())
+        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.

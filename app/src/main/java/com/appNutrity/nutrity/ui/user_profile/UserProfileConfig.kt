@@ -34,6 +34,7 @@ class UserProfileConfig : AppCompatActivity() {
     private lateinit var binding: ActivityUserProfileConfigBinding
     private var uriImage: Uri? = null
     private lateinit var imageViewSelected: ImageView
+    private var aux = false
 
     // Variable that tracks if a the user profile image was replaced
     private var photoHasChanged = false
@@ -114,6 +115,10 @@ class UserProfileConfig : AppCompatActivity() {
             if (prefs.getUri()!="")
             {
                 imageUser.setImageURI(prefs.getUri().toUri())
+                aux = true
+
+            }
+            if (prefs.getUsername()!="User"){
                 userNameLayout.hint = prefs.getUsername()
                 firstNameLayout.hint = prefs.getFirstName()
                 lastNameLayout.hint = prefs.getLastName()
@@ -129,6 +134,7 @@ class UserProfileConfig : AppCompatActivity() {
         ).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+
         startActivity(intent)
         this.finish()
     }
@@ -206,10 +212,7 @@ class UserProfileConfig : AppCompatActivity() {
         prefs.saveFirstName(firstname)
         prefs.saveLastName(lastname)
         if (uriImage!=null){
-            if (prefs.getUri()==""){
-                prefs.saveUri(uriImage.toString())
-            }
-
+            prefs.saveUri(uriImage.toString())
         }
         loading.isDismiss()
         redirectToHome()
