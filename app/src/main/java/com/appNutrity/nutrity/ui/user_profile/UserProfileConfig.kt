@@ -165,30 +165,39 @@ class UserProfileConfig : AppCompatActivity() {
 
                 url=url.replace(" ", "%20")
                 var stringRequest = StringRequest(Request.Method.POST, url, { response ->
+                    Toast.makeText(applicationContext, response.toString(), Toast.LENGTH_SHORT).show()
+                    getUserData(email, state, username, firstname, lastname)
 
                 }, { error ->
 
                     Toast.makeText(applicationContext, ""+error.toString(), Toast.LENGTH_SHORT).show()
                 })
                 request.add(stringRequest)
-
-                delay(1000)
-
-                url = "https://ivanurenda.000webhostapp.com/UserData.php?email=${email}"
-                url=url.replace(" ", "%20")
-                stringRequest = StringRequest(Request.Method.GET, url, { response ->
-
-                    val jsonArray = JSONArray(response)
-                    val jsonObject = JSONObject(jsonArray.getString(0))
-                    setValuesPrefs(jsonObject, state, username, firstname, lastname)
-                }, { error ->
-
-                })
-                request.add(stringRequest)
             }
 
         }
 
+    }
+
+    private fun getUserData(
+        email: String?,
+        state: Boolean,
+        username: String,
+        firstname: String,
+        lastname: String
+    ){
+        val request = Volley.newRequestQueue(applicationContext)
+        var url = "https://ivanurenda.000webhostapp.com/UserData.php?email=${email}"
+        url=url.replace(" ", "%20")
+        var stringRequest = StringRequest(Request.Method.GET, url, { response ->
+
+            val jsonArray = JSONArray(response)
+            val jsonObject = JSONObject(jsonArray.getString(0))
+            setValuesPrefs(jsonObject, state, username, firstname, lastname)
+        }, { error ->
+
+        })
+        request.add(stringRequest)
     }
 
     private fun setValuesPrefs(
