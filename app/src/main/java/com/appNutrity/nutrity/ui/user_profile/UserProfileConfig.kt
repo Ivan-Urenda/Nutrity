@@ -136,9 +136,9 @@ class UserProfileConfig : AppCompatActivity() {
 
             }
             if (prefs.getUsername()!="User"){
-                userNameLayout.hint = prefs.getUsername()
-                firstNameLayout.hint = prefs.getFirstName()
-                lastNameLayout.hint = prefs.getLastName()
+                userNameTextInput.setText(prefs.getUsername())
+                firstNameTextInput.setText(prefs.getFirstName())
+                lastNameTextInput.setText(prefs.getLastName())
             }
 
         }
@@ -182,7 +182,6 @@ class UserProfileConfig : AppCompatActivity() {
 
                 url=url.replace(" ", "%20")
                 var stringRequest = StringRequest(Request.Method.POST, url, { response ->
-                    Toast.makeText(applicationContext, response.toString(), Toast.LENGTH_SHORT).show()
                     getUserData(email, state, username, firstname, lastname)
 
                 }, { error ->
